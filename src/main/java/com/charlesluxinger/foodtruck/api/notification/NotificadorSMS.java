@@ -1,13 +1,12 @@
 package com.charlesluxinger.foodtruck.api.notification;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.charlesluxinger.foodtruck.api.model.Cliente;
 
 //@Primary
 @Component
-@Qualifier("sms")
+@TipoNotificador(NivelUrgencia.NORMAL)
 public class NotificadorSMS implements Notificador {
 
 	@Override
