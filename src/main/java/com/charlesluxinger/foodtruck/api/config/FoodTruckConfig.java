@@ -10,7 +10,7 @@ import com.charlesluxinger.foodtruck.api.notification.TipoNotificador;
 @Configuration
 public class FoodTruckConfig {
 
-	@Bean
+	@Bean(initMethod = "init", destroyMethod = "destroy")
 	@TipoNotificador(NivelUrgencia.URGENTE)
 	public NotificadorEmail notificadorEmail() {
 		NotificadorEmail notificador = new NotificadorEmail("smtpserver.foodtruck-api.com.br");
