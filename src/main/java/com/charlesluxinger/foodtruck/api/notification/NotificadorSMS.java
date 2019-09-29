@@ -1,9 +1,11 @@
 package com.charlesluxinger.foodtruck.api.notification;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import com.charlesluxinger.foodtruck.api.model.Cliente;
 
+@Primary
 @Component
 public class NotificadorSMS implements Notificador {
 
