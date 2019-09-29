@@ -3,6 +3,7 @@ package com.charlesluxinger.foodtruck.api.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.charlesluxinger.foodtruck.api.model.Cliente;
@@ -14,6 +15,7 @@ public class AtivacaoClienteService {
 	// @Autowired(required = false) - Pontos de Injeção
 	// Dependencia opcional
 	@Autowired
+	@Qualifier("sms")
 	private List<Notificador> notificadores;
 
 	// @Autowired - Pontos de Injeção
