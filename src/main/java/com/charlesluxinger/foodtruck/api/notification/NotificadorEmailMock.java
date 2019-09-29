@@ -4,13 +4,13 @@ import org.springframework.context.annotation.Profile;
 
 import com.charlesluxinger.foodtruck.api.model.Cliente;
 
-@Profile("PROD")
-public class NotificadorEmail implements Notificador {
+@Profile("DEV")
+public class NotificadorEmailMock implements Notificador {
 
 	private boolean upperCase;
 	private String hostServerSmtp;
 
-	public NotificadorEmail(String hostServerSmtp) {
+	public NotificadorEmailMock(String hostServerSmtp) {
 		this.hostServerSmtp = hostServerSmtp;
 	}
 
@@ -21,7 +21,7 @@ public class NotificadorEmail implements Notificador {
 			mensagem = mensagem.toUpperCase();
 		}
 
-		System.out.printf("Notificando %s através do e-mail %s: %s, Server: %s\n", cliente.getNome(),
+		System.out.printf("Mock: Notificando %s através do e-mail %s: %s, Server: %s\n", cliente.getNome(),
 				cliente.getEmail(), mensagem, hostServerSmtp);
 	}
 
