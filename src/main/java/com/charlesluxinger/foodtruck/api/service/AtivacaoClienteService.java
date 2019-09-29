@@ -8,7 +8,8 @@ import com.charlesluxinger.foodtruck.api.notification.Notificador;
 @Component
 public class AtivacaoClienteService {
 
-	// @Autowired - Pontos de Injeção
+	// @Autowired(required = false) - Pontos de Injeção
+	// Dependencia opcional
 	private Notificador notificador;
 
 	// @Autowired - Pontos de Injeção
@@ -20,7 +21,9 @@ public class AtivacaoClienteService {
 	public void ativar(Cliente cliente) {
 		cliente.ativar();
 
-		this.notificador.notificar(cliente, "Seu cadastro no sistema está ativo!");
+		if (notificador != null) {
+			this.notificador.notificar(cliente, "Seu cadastro no sistema está ativo!");
+		}
 	}
 
 	// @Autowired - Pontos de Injeção
