@@ -24,9 +24,12 @@ public class TesteJPA {
 
 		Cozinha cozinha2 = new Cozinha();
 		cozinha2.setNome("Japonesa");
-		cadastroCozinha.save(cozinha2);
+
+		Cozinha cozinhaSaved = cadastroCozinha.save(cozinha2);
 
 		cadastroCozinha.listar().forEach(x -> System.out.println(x.getNome()));
+
+		System.out.println(cadastroCozinha.findById(cozinhaSaved.getId()).getNome());
 
 	}
 }
