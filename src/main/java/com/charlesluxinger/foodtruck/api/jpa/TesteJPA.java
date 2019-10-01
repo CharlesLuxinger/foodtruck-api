@@ -31,5 +31,8 @@ public class TesteJPA {
 
 		System.out.println(cadastroCozinha.findById(cozinhaSaved.getId()).getNome());
 
+		// É necessário passar a instacia para manager para remover, implementação no
+		// metodo.
+		cadastroCozinha.remove(cozinhaSaved);
 	}
 }
