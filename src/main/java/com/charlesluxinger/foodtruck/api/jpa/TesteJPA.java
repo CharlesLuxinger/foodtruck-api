@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.charlesluxinger.foodtruck.api.FoodtruckApiApplication;
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
+import com.charlesluxinger.foodtruck.api.infrastructure.repository.CozinhaRepositoryImpl;
 
 public class TesteJPA {
 
@@ -14,9 +15,9 @@ public class TesteJPA {
 				.web(WebApplicationType.NONE)
 				.run(args);
 
-		CadastroCozinha cadastroCozinha = applicationContext.getBean(CadastroCozinha.class);
+		CozinhaRepositoryImpl cadastroCozinha = applicationContext.getBean(CozinhaRepositoryImpl.class);
 
-		cadastroCozinha.listar().forEach(x -> System.out.println(x.getNome()));
+		cadastroCozinha.findAll().forEach(x -> System.out.println(x.getNome()));
 
 		Cozinha cozinha1 = new Cozinha();
 		cozinha1.setNome("Brasileira");
@@ -27,7 +28,7 @@ public class TesteJPA {
 
 		Cozinha cozinhaSaved = cadastroCozinha.save(cozinha2);
 
-		cadastroCozinha.listar().forEach(x -> System.out.println(x.getNome()));
+		cadastroCozinha.findAll().forEach(x -> System.out.println(x.getNome()));
 
 		System.out.println(cadastroCozinha.findById(cozinhaSaved.getId()).getNome());
 
