@@ -22,14 +22,14 @@ public class Restaurante {
 	@EqualsAndHashCode.Include
 	private Integer id;
 
-	@Column(name = "NOME", length = 30)
+	@Column(name = "NOME", length = 30, nullable = false)
 	private String nome;
 
-	@Column(name = "TAXA_FRETE")
+	@Column(name = "TAXA_FRETE", nullable = false)
 	private BigDecimal taxaFrete;
 
 	@ManyToOne
-	@JoinColumn(name = "cozinha_id")
+	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
 
 }

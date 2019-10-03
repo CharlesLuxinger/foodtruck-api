@@ -21,7 +21,7 @@ public class Cozinha {
 	@EqualsAndHashCode.Include
 	private Integer id;
 
-	@Column(name = "NOME", length = 30)
+	@Column(name = "NOME", length = 30, nullable = false)
 	private String nome;
 
 }
