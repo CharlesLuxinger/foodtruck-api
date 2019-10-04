@@ -23,7 +23,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 	}
 
 	@Override
-	public Restaurante findById(Integer id) {
+	public Restaurante findById(Long id) {
 		return manager.find(Restaurante.class, id);
 	}
 

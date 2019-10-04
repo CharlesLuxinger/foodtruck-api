@@ -8,7 +8,7 @@ public interface CozinhaRepository {
 
 	public List<Cozinha> findAll();
 
-	public Cozinha findById(Integer id);
+	public Cozinha findById(Long id);
 
 	public Cozinha save(Cozinha cozinha);
 
