@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
+import com.charlesluxinger.foodtruck.api.model.CozinhasRepresetationModel;
 
 @RestController // Possui ambas anotacoes @ResponseBody @Controller
-@RequestMapping(value = "/cozinhas", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+//@RequestMapping(value = "/cozinhas", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+@RequestMapping(value = "/cozinhas")
 public class CozinhaController {
 
 	@Autowired
@@ -22,6 +24,11 @@ public class CozinhaController {
 	@GetMapping
 	public List<Cozinha> findAll() {
 		return cozinhaRepository.findAll();
+	}
+
+	@GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
+	public CozinhasRepresetationModel findAllXML() {
+		return new CozinhasRepresetationModel(cozinhaRepository.findAll());
 	}
 
 	@GetMapping("/{id}")
