@@ -2,6 +2,7 @@ package com.charlesluxinger.foodtruck.api.controller;
 
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
+import com.charlesluxinger.foodtruck.api.domain.service.CozinhaService;
 import com.charlesluxinger.foodtruck.api.model.CozinhasRepresetationModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class CozinhaController {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
+
+    @Autowired
+    private CozinhaService cozinhaService;
 
     @GetMapping
     public List<Cozinha> findAll() {
@@ -45,7 +49,7 @@ public class CozinhaController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha save(@RequestBody Cozinha cozinha) {
-        return cozinhaRepository.save(cozinha);
+        return cozinhaService.save(cozinha);
     }
 
     @PutMapping("/{id}")
