@@ -1,16 +1,16 @@
 package com.charlesluxinger.foodtruck.api.domain.repository;
 
-import java.util.List;
-
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
+
+import java.util.List;
 
 public interface CozinhaRepository {
 
-	public List<Cozinha> findAll();
+	List<Cozinha> findAll();
 
-	public Cozinha findById(Long id);
+	Cozinha findById(Long id);
 
-	public Cozinha save(Cozinha cozinha);
+	Cozinha save(Cozinha cozinha);
 
-	public void remove(Cozinha cozinha);
+	void remove(Long id);
 }
