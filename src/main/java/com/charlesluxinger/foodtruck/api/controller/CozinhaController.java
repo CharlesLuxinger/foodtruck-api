@@ -5,11 +5,9 @@ import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundExceptio
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CozinhaService;
-import com.charlesluxinger.foodtruck.api.model.CozinhasRepresetationModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,11 +27,6 @@ public class CozinhaController {
     @GetMapping
     public List<Cozinha> findAll() {
         return cozinhaRepository.findAll();
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-    public CozinhasRepresetationModel findAllXML() {
-        return new CozinhasRepresetationModel(cozinhaRepository.findAll());
     }
 
     @GetMapping("/{id}")
@@ -60,7 +53,7 @@ public class CozinhaController {
         if (cozinhaFound != null) {
             BeanUtils.copyProperties(cozinha, cozinhaFound, "id");
 
-            cozinhaFound = cozinhaRepository.save(cozinhaFound);
+            cozinhaFound = cozinhaService.save(cozinhaFound);
 
             return ResponseEntity.ok(cozinhaFound);
         }
