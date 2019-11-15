@@ -4,6 +4,7 @@ import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundExceptio
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,6 @@ public class RestauranteController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> save(@RequestBody Restaurante restaurante) {
 
         try {
@@ -48,5 +48,21 @@ public class RestauranteController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
 
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Restaurante restaurante) {
+        Restaurante restauranteFound = restauranteRepository.findById(id);
+
+        try {
+            if (restauranteFound != null) {
+                BeanUtils.copyProperties(restaurante, restauranteFound, "id");
+                restauranteFound = restauranteService.save(restauranteFound);
+                return ResponseEntity.ok(restauranteFound);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 }
