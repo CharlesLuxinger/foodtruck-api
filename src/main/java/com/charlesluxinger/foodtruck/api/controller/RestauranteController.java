@@ -4,13 +4,17 @@ import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundExceptio
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -66,7 +70,21 @@ public class RestauranteController {
         }
     }
 
-    @DeleteMapping("/{id}")
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate){
+        Restaurante restauranteFound = restauranteRepository.findById(id);
+
+        if (restauranteFound == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        merge(fieldsToUpdate, restauranteFound);
+
+        return update(id, restauranteFound);
+    }
+
+   @DeleteMapping("/{id}")
     public ResponseEntity<Restaurante> remove(@PathVariable Long id){
         try {
             restauranteService.remove(id);
@@ -74,5 +92,19 @@ public class RestauranteController {
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    private void merge(Map<String, Object> fieldsToUpdate, Restaurante restauranteTarget) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Restaurante restauranteSource = objectMapper.convertValue(fieldsToUpdate, Restaurante.class);
+
+        fieldsToUpdate.forEach((fieldName, fieldValue) -> {
+            Field field = ReflectionUtils.findField(Restaurante.class, fieldName);
+            field.setAccessible(true);
+
+            Object newValue = ReflectionUtils.getField(field, restauranteSource);
+
+            ReflectionUtils.setField(field, restauranteTarget, newValue);
+        });
     }
 }
