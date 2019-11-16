@@ -1,16 +1,16 @@
 package com.charlesluxinger.foodtruck.api.domain.repository;
 
-import java.util.List;
-
 import com.charlesluxinger.foodtruck.api.domain.model.Estado;
+
+import java.util.List;
 
 public interface EstadoRepository {
 
-	public List<Estado> findAll();
+	List<Estado> findAll();
 
-	public Estado findById(Long id);
+	Estado findById(Long id);
 
-	public Estado save(Estado estado);
+	Estado save(Estado estado);
 
-	public void remove(Estado estado);
+	void remove(Long id);
 }

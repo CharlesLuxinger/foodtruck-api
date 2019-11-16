@@ -1,15 +1,14 @@
 package com.charlesluxinger.foodtruck.api.infrastructure.repository;
 
-import java.util.List;
+import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
+import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
-import org.springframework.stereotype.Component;
-
-import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
-import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
+import java.util.List;
 
 @Component
 public class CidadeRepositoryImpl implements CidadeRepository {
@@ -36,11 +35,12 @@ public class CidadeRepositoryImpl implements CidadeRepository {
 
 	@Override
 	@Transactional
-	public void remove(Cidade cidade) {
-		Cidade cidadeFound = findById(cidade.getId());
-		if (cidadeFound != null) {
-			manager.remove(cidadeFound);
+	public void remove(Long id) {
+		Cidade cidadeFound = findById(id);
+		if (cidadeFound == null) {
+			throw new EmptyResultDataAccessException(1);
 		}
+		manager.remove(cidadeFound);
 	}
 
 }

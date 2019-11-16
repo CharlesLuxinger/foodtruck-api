@@ -1,16 +1,16 @@
 package com.charlesluxinger.foodtruck.api.domain.repository;
 
-import java.util.List;
-
 import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
+
+import java.util.List;
 
 public interface CidadeRepository {
 
-	public List<Cidade> findAll();
+	List<Cidade> findAll();
 
-	public Cidade findById(Long id);
+	Cidade findById(Long id);
 
-	public Cidade save(Cidade cidade);
+	Cidade save(Cidade cidade);
 
-	public void remove(Cidade cidade);
+	void remove(Long id);
 }

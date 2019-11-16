@@ -1,15 +1,14 @@
 package com.charlesluxinger.foodtruck.api.infrastructure.repository;
 
-import java.util.List;
+import com.charlesluxinger.foodtruck.api.domain.model.Estado;
+import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
-import org.springframework.stereotype.Component;
-
-import com.charlesluxinger.foodtruck.api.domain.model.Estado;
-import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
+import java.util.List;
 
 @Component
 public class EstadoRepositoryImpl implements EstadoRepository {
@@ -36,11 +35,12 @@ public class EstadoRepositoryImpl implements EstadoRepository {
 
 	@Override
 	@Transactional
-	public void remove(Estado estado) {
-		Estado estadoFound = findById(estado.getId());
-		if (estadoFound != null) {
-			manager.remove(estadoFound);
+	public void remove(Long id) {
+		Estado estadoFound = findById(id);
+		if (estadoFound == null) {
+			throw new EmptyResultDataAccessException(1);
 		}
+		manager.remove(estadoFound);
 	}
 
 }

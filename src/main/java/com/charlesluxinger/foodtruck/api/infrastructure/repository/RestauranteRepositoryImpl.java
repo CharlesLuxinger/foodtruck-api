@@ -1,15 +1,14 @@
 package com.charlesluxinger.foodtruck.api.infrastructure.repository;
 
-import java.util.List;
+import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
+import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-
-import org.springframework.stereotype.Component;
-
-import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
-import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
+import java.util.List;
 
 @Component
 public class RestauranteRepositoryImpl implements RestauranteRepository {
@@ -36,11 +35,12 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 
 	@Override
 	@Transactional
-	public void remove(Restaurante restaurante) {
-		Restaurante restauranteFound = findById(restaurante.getId());
-		if (restauranteFound != null) {
-			manager.remove(restauranteFound);
+	public void remove(Long id) {
+		Restaurante restauranteFound = findById(id);
+		if (restauranteFound == null) {
+			throw new EmptyResultDataAccessException(1);
 		}
+		manager.remove(restauranteFound);
 	}
 
 }
