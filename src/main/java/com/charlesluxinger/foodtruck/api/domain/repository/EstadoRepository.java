@@ -1,16 +1,10 @@
 package com.charlesluxinger.foodtruck.api.domain.repository;
 
 import com.charlesluxinger.foodtruck.api.domain.model.Estado;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface EstadoRepository extends JpaRepository<Estado, Long> {
 
-public interface EstadoRepository {
-
-	List<Estado> findAll();
-
-	Estado findById(Long id);
-
-	Estado save(Estado estado);
-
-	void remove(Long id);
 }

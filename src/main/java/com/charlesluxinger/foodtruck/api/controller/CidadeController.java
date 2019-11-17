@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cidades")
@@ -29,7 +30,7 @@ public class CidadeController {
 
     @GetMapping("/{id}")
     public Cidade findById(@PathVariable Long id) {
-        return cidadeRepository.findById(id);
+        return cidadeRepository.findById(id).get();
     }
 
     @PostMapping
@@ -44,13 +45,12 @@ public class CidadeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Cidade cidade) {
-        Cidade cidadeFound = cidadeRepository.findById(id);
+        Optional<Cidade> cidadeFound = cidadeRepository.findById(id);
 
         try {
-            if (cidadeFound != null) {
-                BeanUtils.copyProperties(cidade, cidadeFound, "id");
-                cidadeFound = cidadeService.save(cidadeFound);
-                return ResponseEntity.ok(cidadeFound);
+            if (cidadeFound.isPresent()) {
+                BeanUtils.copyProperties(cidade, cidadeFound.get(), "id");
+                return ResponseEntity.ok(cidadeService.save(cidadeFound.get()));
             }
             return ResponseEntity.notFound().build();
         } catch (EntityNotFoundException ex) {

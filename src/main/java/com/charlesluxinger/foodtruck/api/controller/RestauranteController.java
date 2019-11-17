@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -33,13 +34,13 @@ public class RestauranteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurante> findById(@PathVariable Long id) {
-        Restaurante restaurante = restauranteRepository.findById(id);
+        Optional<Restaurante> restaurante = restauranteRepository.findById(id);
 
-        if (restaurante == null) {
+        if (restaurante.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(restaurante);
+        return ResponseEntity.ok(restaurante.get());
     }
 
     @PostMapping
@@ -56,13 +57,12 @@ public class RestauranteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Restaurante restaurante) {
-        Restaurante restauranteFound = restauranteRepository.findById(id);
+        Optional<Restaurante> restauranteFound = restauranteRepository.findById(id);
 
         try {
-            if (restauranteFound != null) {
+            if (restauranteFound.isPresent()) {
                 BeanUtils.copyProperties(restaurante, restauranteFound, "id");
-                restauranteFound = restauranteService.save(restauranteFound);
-                return ResponseEntity.ok(restauranteFound);
+                return ResponseEntity.ok(restauranteService.save(restauranteFound.get()));
             }
             return ResponseEntity.notFound().build();
         } catch (EntityNotFoundException ex) {
@@ -73,15 +73,15 @@ public class RestauranteController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate){
-        Restaurante restauranteFound = restauranteRepository.findById(id);
+        Optional<Restaurante> restauranteFound = restauranteRepository.findById(id);
 
-        if (restauranteFound == null) {
+        if (restauranteFound.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        merge(fieldsToUpdate, restauranteFound);
+        merge(fieldsToUpdate, restauranteFound.get());
 
-        return update(id, restauranteFound);
+        return update(id, restauranteFound.get());
     }
 
    @DeleteMapping("/{id}")

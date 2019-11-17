@@ -29,7 +29,7 @@ public class RestauranteService {
 
     public void remove(Long id){
         try {
-            restauranteRepository.remove(id);
+            restauranteRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
             throw new EntityNotFoundException(String.format("Restaurante de ID: %d não encontrada.", id));
         }

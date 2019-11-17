@@ -21,7 +21,7 @@ public class EstadoService {
 
     public void remove(Long id){
         try {
-            estadoRepository.remove(id);
+            estadoRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
             throw new EntityNotFoundException(String.format("Estado de ID: %d não encontrada.", id));
         }

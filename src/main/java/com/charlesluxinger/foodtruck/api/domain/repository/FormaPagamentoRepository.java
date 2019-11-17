@@ -1,16 +1,10 @@
 package com.charlesluxinger.foodtruck.api.domain.repository;
 
-import java.util.List;
-
 import com.charlesluxinger.foodtruck.api.domain.model.FormaPagamento;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface FormaPagamentoRepository {
+@Repository
+public interface FormaPagamentoRepository extends JpaRepository<FormaPagamento, Long> {
 
-	public List<FormaPagamento> findAll();
-
-	public FormaPagamento findById(Long id);
-
-	public FormaPagamento save(FormaPagamento formaPagamento);
-
-	public void remove(FormaPagamento formaPagamento);
 }

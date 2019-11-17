@@ -1,16 +1,10 @@
 package com.charlesluxinger.foodtruck.api.domain.repository;
 
 import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface CidadeRepository extends JpaRepository<Cidade, Long> {
 
-public interface CidadeRepository {
-
-	List<Cidade> findAll();
-
-	Cidade findById(Long id);
-
-	Cidade save(Cidade cidade);
-
-	void remove(Long id);
 }

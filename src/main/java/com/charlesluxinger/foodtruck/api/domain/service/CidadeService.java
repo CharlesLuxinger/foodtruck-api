@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CidadeService {
 
@@ -20,19 +22,19 @@ public class CidadeService {
 
     public Cidade save(Cidade cidade){
         Long estadoId = cidade.getEstado().getId();
-        Estado estado = estadoRepository.findById(estadoId);
+        Optional<Estado> estado = estadoRepository.findById(estadoId);
 
-        if (estado == null) {
+        if (estado.isEmpty()) {
             throw new EntityNotFoundException(String.format("Estado ID: %d não encontrado.", estadoId));
         }
 
-        cidade.setEstado(estado);
+        cidade.setEstado(estado.get());
         return cidadeRepository.save(cidade);
     }
 
     public void remove(Long id) {
         try {
-            cidadeRepository.remove(id);
+            cidadeRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
             throw new EntityNotFoundException(String.format("Cidade de ID: %d não encontrada.", id));
         }

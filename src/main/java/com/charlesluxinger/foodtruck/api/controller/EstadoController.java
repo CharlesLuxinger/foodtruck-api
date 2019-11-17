@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController // Possui ambas anotacoes @ResponseBody @Controller
 @RequestMapping(value = "/estados", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -31,7 +32,7 @@ public class EstadoController {
 
 	@GetMapping("/{id}")
 	public Estado findById(@PathVariable("id") Long id) {
-		return estadoRepository.findById(id);
+		return estadoRepository.findById(id).get();
 	}
 
 	@PostMapping
@@ -42,12 +43,11 @@ public class EstadoController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Estado> update(@PathVariable Long id, @RequestBody Estado estado){
-		Estado estadoFound = estadoRepository.findById(id);
+		Optional<Estado> estadoFound = estadoRepository.findById(id);
 
-		if (estadoFound != null) {
+		if (estadoFound.isPresent()) {
 			BeanUtils.copyProperties(estado, estadoFound, "id");
-			estadoFound = estadoService.save(estadoFound);
-			return ResponseEntity.ok(estadoFound);
+			return ResponseEntity.ok(estadoService.save(estadoFound.get()));
 		}
 
 		return ResponseEntity.notFound().build();

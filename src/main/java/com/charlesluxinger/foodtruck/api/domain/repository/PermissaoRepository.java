@@ -1,16 +1,10 @@
 package com.charlesluxinger.foodtruck.api.domain.repository;
 
-import java.util.List;
-
 import com.charlesluxinger.foodtruck.api.domain.model.Permissao;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface PermissaoRepository {
+@Repository
+public interface PermissaoRepository extends JpaRepository<Permissao, Long> {
 
-	public List<Permissao> findAll();
-
-	public Permissao findById(Long id);
-
-	public Permissao save(Permissao permissao);
-
-	public void remove(Permissao permissao);
 }
