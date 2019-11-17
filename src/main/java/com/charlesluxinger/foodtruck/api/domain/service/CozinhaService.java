@@ -21,7 +21,7 @@ public class CozinhaService {
 
     public void remove(Long id) {
         try {
-            cozinhaRepository.remove(id);
+            cozinhaRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
             throw new EntityNotFoundException(String.format("Cozinha de ID: %d não encontrada.", id));
         }

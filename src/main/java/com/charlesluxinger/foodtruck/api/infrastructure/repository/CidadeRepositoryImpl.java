@@ -3,14 +3,14 @@ package com.charlesluxinger.foodtruck.api.infrastructure.repository;
 import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Component
+@Repository
 public class CidadeRepositoryImpl implements CidadeRepository {
 
 	@PersistenceContext
@@ -25,7 +25,6 @@ public class CidadeRepositoryImpl implements CidadeRepository {
 	public Cidade findById(Long id) {
 		return manager.find(Cidade.class, id);
 	}
-
 
 	@Override
 	@Transactional

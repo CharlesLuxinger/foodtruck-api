@@ -1,16 +1,10 @@
 package com.charlesluxinger.foodtruck.api.domain.repository;
 
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface CozinhaRepository extends JpaRepository<Cozinha, Long> {
 
-public interface CozinhaRepository {
-
-	List<Cozinha> findAll();
-
-	Cozinha findById(Long id);
-
-	Cozinha save(Cozinha cozinha);
-
-	void remove(Long id);
 }

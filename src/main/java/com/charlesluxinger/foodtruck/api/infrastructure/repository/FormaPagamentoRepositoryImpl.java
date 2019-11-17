@@ -1,17 +1,15 @@
 package com.charlesluxinger.foodtruck.api.infrastructure.repository;
 
-import java.util.List;
+import com.charlesluxinger.foodtruck.api.domain.model.FormaPagamento;
+import com.charlesluxinger.foodtruck.api.domain.repository.FormaPagamentoRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.List;
 
-import org.springframework.stereotype.Component;
-
-import com.charlesluxinger.foodtruck.api.domain.model.FormaPagamento;
-import com.charlesluxinger.foodtruck.api.domain.repository.FormaPagamentoRepository;
-
-@Component
+@Repository
 public class FormaPagamentoRepositoryImpl implements FormaPagamentoRepository {
 
 	@PersistenceContext
