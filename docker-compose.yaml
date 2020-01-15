@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  mysql:
+    build: .docker/mysql
+    container_name: mysql
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - /home/charles/db/mysql/:/var/lib/mysql
+    networks:
+      - foodtruck-network
+
+  foodtruck:
+    build: .
+    container_name: foodtruck
+    restart: always
+    tty: true
+    ports:
+      - "8080:8080"
+    networks:
+      - foodtruck-network
+
+networks:
+  foodtruck-network:
+    driver: bridge
