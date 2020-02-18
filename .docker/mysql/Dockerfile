@@ -1,0 +1,8 @@
+FROM mysql:8.0.18
+
+RUN apk add bash
+
+ENV MYSQL_ROOT_PASSWORD 12345678 \
+    && MYSQL_DATABASE foodtruck
+
+EXPOSE 3306

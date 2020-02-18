@@ -3,9 +3,10 @@ version: '3'
 services:
   mysql:
     build: .docker/mysql
-    container_name: mysql
+    container_name: mysql-foodtruck-api
     restart: always
     tty: true
+    command: --innodb-use-native-aio=0
     ports:
       - "3306:3306"
     volumes:
@@ -15,14 +16,18 @@ services:
 
   foodtruck:
     build: .
-    container_name: foodtruck
+    container_name: foodtruck-api
     restart: always
     tty: true
     ports:
       - "8080:8080"
     networks:
       - foodtruck-network
+    environment:
+      DATABASE_HOST: mysql-foodtruck-api
+    depends_on:
+      - mysql
 
 networks:
   foodtruck-network:
-    driver: bridge
+    external: true
