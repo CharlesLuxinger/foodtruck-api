@@ -25,8 +25,10 @@ services:
       - foodtruck-network
     environment:
       DATABASE_HOST: mysql-foodtruck-api
+      DATABASE_PORT: 3306
     depends_on:
       - mysql
+#    entrypoint: dockerize -wait tcp://mysql-foodtruck-api:3306 -timeout 40s
 
 networks:
   foodtruck-network:
