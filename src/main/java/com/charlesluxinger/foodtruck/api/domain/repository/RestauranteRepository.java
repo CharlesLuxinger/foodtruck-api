@@ -10,5 +10,7 @@ import java.util.List;
 public interface RestauranteRepository extends JpaRepository<Restaurante, Long> {
 
     List<Restaurante> consultarPorNome();
-    
+
+    List<Restaurante> find();
+
 }
