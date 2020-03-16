@@ -3,8 +3,6 @@ package com.charlesluxinger.foodtruck.api.controller;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
-import com.charlesluxinger.foodtruck.api.domain.repository.spec.RestauranteComFreteGratisSpec;
-import com.charlesluxinger.foodtruck.api.domain.repository.spec.RestaurantePorNomeSpec;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +24,9 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.charlesluxinger.foodtruck.api.domain.repository.spec.RestauranteFactorySpecs.comFreteGratis;
+import static com.charlesluxinger.foodtruck.api.domain.repository.spec.RestauranteFactorySpecs.porNome;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -106,10 +107,7 @@ public class RestauranteController {
 
     @GetMapping("/comFreteGratis")
     public List<Restaurante> restaurantesComFreteGratis(String nome){
-        var comFreteGratis = new RestauranteComFreteGratisSpec();
-        var findByNome = new RestaurantePorNomeSpec(nome);
-
-        return restauranteRepository.findAll(comFreteGratis.and(findByNome));
+        return restauranteRepository.findAll(comFreteGratis().and(porNome(nome)));
     }
 
     private void merge(Map<String, Object> fieldsToUpdate, Restaurante restauranteTarget) {
