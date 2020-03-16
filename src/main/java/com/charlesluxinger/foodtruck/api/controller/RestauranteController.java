@@ -3,6 +3,8 @@ package com.charlesluxinger.foodtruck.api.controller;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
+import com.charlesluxinger.foodtruck.api.domain.repository.spec.RestauranteComFreteGratisSpec;
+import com.charlesluxinger.foodtruck.api.domain.repository.spec.RestaurantePorNomeSpec;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
@@ -10,7 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -92,6 +102,14 @@ public class RestauranteController {
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/comFreteGratis")
+    public List<Restaurante> restaurantesComFreteGratis(String nome){
+        var comFreteGratis = new RestauranteComFreteGratisSpec();
+        var findByNome = new RestaurantePorNomeSpec(nome);
+
+        return restauranteRepository.findAll(comFreteGratis.and(findByNome));
     }
 
     private void merge(Map<String, Object> fieldsToUpdate, Restaurante restauranteTarget) {
