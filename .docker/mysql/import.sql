@@ -15,6 +15,19 @@ CREATE TABLE `cidade` (
                           CONSTRAINT `FKkworrwk40xj58kevvh3evi500` FOREIGN KEY (`estado_id`) REFERENCES `estado` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
+CREATE TABLE `endereco` (
+                            `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                            `endereco_bairro` varchar(255) DEFAULT NULL,
+                            `endereco_cep` varchar(255) DEFAULT NULL,
+                            `endereco_complemento` varchar(255) DEFAULT NULL,
+                            `endereco_logradouro` varchar(255) DEFAULT NULL,
+                            `endereco_numero` varchar(255) DEFAULT NULL,
+                            `endereco_cidade_id` bigint(20) DEFAULT NULL,
+                            PRIMARY KEY (`id`),
+                            KEY `FKckypcp27tyiumw3tijodfj471` (`endereco_cidade_id`),
+                            CONSTRAINT `FKckypcp27tyiumw3tijodfj471` FOREIGN KEY (`endereco_cidade_id`) REFERENCES `cidade` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
 CREATE TABLE `cozinha` (
                            `id` bigint(20) NOT NULL AUTO_INCREMENT,
                            `nome` varchar(30) NOT NULL,
@@ -23,22 +36,17 @@ CREATE TABLE `cozinha` (
 
 CREATE TABLE `restaurante` (
                                `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                               `endereco_bairro` varchar(255) DEFAULT NULL,
-                               `endereco_cep` varchar(255) DEFAULT NULL,
-                               `endereco_complemento` varchar(255) DEFAULT NULL,
-                               `endereco_logradouro` varchar(255) DEFAULT NULL,
-                               `endereco_numero` varchar(255) DEFAULT NULL,
-                               `nome` varchar(30) NOT NULL,
+                               `nome` varchar(255) DEFAULT NULL,
                                `taxa_frete` decimal(19,2) NOT NULL,
                                `cozinha_id` bigint(20) NOT NULL,
-                               `endereco_cidade_id` bigint(20) DEFAULT NULL,
+                               `endereco_id` bigint(20) DEFAULT NULL,
                                `data_cadastro` datetime not null,
                                `data_atualizacao` datetime not null,
                                PRIMARY KEY (`id`),
                                KEY `FK76grk4roudh659skcgbnanthi` (`cozinha_id`),
-                               KEY `FKbc0tm7hnvc96d8e7e2ulb05yw` (`endereco_cidade_id`),
+                               KEY `FKnc0aps7r9c6euyqrs6d2v04qa` (`endereco_id`),
                                CONSTRAINT `FK76grk4roudh659skcgbnanthi` FOREIGN KEY (`cozinha_id`) REFERENCES `cozinha` (`id`),
-                               CONSTRAINT `FKbc0tm7hnvc96d8e7e2ulb05yw` FOREIGN KEY (`endereco_cidade_id`) REFERENCES `cidade` (`id`)
+                               CONSTRAINT `FKnc0aps7r9c6euyqrs6d2v04qa` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `forma_pagamento` (
@@ -123,7 +131,9 @@ insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 2);
 insert into cidade (id, nome, estado_id) values (4, 'Campinas', 2);
 insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 3);
 
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values (1, 'Thai Gourmet', 10, 1, utc_timestamp, utc_timestamp, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
+insert into endereco(id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values (1, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
+
+insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, endereco_id) values (1, 'Thai Gourmet', 10, 1, utc_timestamp, utc_timestamp, 1);
 insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao) values (2, 'Thai Delivery', 9.50, 1, utc_timestamp, utc_timestamp);
 insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao) values (3, 'Tuk Tuk Comida Indiana', 15, 2, utc_timestamp, utc_timestamp);
 insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao) values (4, 'Java Steakhouse', 12, 3, utc_timestamp, utc_timestamp);
