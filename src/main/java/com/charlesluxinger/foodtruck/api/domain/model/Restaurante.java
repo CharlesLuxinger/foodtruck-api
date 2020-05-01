@@ -51,4 +51,7 @@ public class Restaurante {
 	@Column(name = "data_atualizacao")
 	private LocalDateTime dataAtualizacao;
 
+	@OneToMany(mappedBy = "restaurante")
+	List<Produto> produtos = new ArrayList<>();
+
 }
