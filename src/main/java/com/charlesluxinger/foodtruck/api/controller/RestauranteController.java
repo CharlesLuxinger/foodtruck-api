@@ -72,7 +72,10 @@ public class RestauranteController {
 
         try {
             if (restauranteFound.isPresent()) {
-                BeanUtils.copyProperties(restaurante, restauranteFound, "id", "formas_pagamento", "endereco");
+                BeanUtils.copyProperties(restaurante, restauranteFound, "id",
+                                                                                      "formasPagamento",
+                                                                                      "endereco",
+                                                                                      "dataCadastro");
                 return ResponseEntity.ok(restauranteService.save(restauranteFound.get()));
             }
             return ResponseEntity.notFound().build();

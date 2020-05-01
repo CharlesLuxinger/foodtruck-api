@@ -1,6 +1,7 @@
 package com.charlesluxinger.foodtruck.api.domain.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Data
@@ -39,5 +42,13 @@ public class Restaurante {
 				joinColumns = @JoinColumn(name = "restaurante_id"),
 					inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
 	private List<FormaPagamento> formasPagamento = new ArrayList<>();
+
+	@CreationTimestamp
+	@Column(name = "data_cadastro")
+	private LocalDateTime dataCadastro;
+
+	@UpdateTimestamp
+	@Column(name = "data_atualizacao")
+	private LocalDateTime dataAtualizacao;
 
 }
