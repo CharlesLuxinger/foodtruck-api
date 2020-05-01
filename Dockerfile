@@ -1,18 +1,15 @@
-FROM openjdk:13-alpine
+FROM maven:3.6.3-jdk-11-slim AS build
 
-RUN apk add bash
+WORKDIR /build
 
-RUN apk add --no-cache openssl
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-ENV DOCKERIZE_VERSION v0.6.1
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+COPY src/ /build/src/
+RUN mvn package -B
 
-COPY "./target/foodtruck-api-0.0.1.jar" /usr/src/foodtruck-api/
+FROM openjdk:11.0.7-jre-slim AS release
 
-WORKDIR /usr/src/foodtruck-api
+COPY --from=build /build/target/*.jar /app.jar
 
-EXPOSE 8080
-
-CMD ["java", "-jar", "foodtruck-api-0.0.1.jar"]
+CMD ["java", "-jar", "/app.jar"]

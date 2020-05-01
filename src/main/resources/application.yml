@@ -1,0 +1,13 @@
+spring:
+    datasource:
+        password: 12345678
+        url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/foodtruck?createDatabaseIfNotExist=true&serverTimezone=UTC
+        username: root
+    jpa:
+        generate-ddl: true
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect
+        show-sql: true

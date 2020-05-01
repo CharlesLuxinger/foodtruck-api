@@ -9,8 +9,4 @@ import java.util.List;
 @Repository
 public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long>,
                                                 RestauranteRepositoryQueries,
-                                                JpaSpecificationExecutor<Restaurante>{
-
-    List<Restaurante> consultarPorNome();
-
-}
+                                                JpaSpecificationExecutor<Restaurante>{}

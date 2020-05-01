@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 services:
   mysql:
@@ -10,9 +10,13 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /home/charles/db/mysql/:/var/lib/mysql
+      - db:/var/lib/mysql
     networks:
-      - foodtruck-network
+      - bubble
+    environment:
+      MYSQL_PASSWORD: 12345678
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: foodtruck
 
   foodtruck:
     build: .
@@ -22,14 +26,15 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - foodtruck-network
+      - bubble
     environment:
       DATABASE_HOST: mysql-foodtruck-api
       DATABASE_PORT: 3306
     depends_on:
       - mysql
-#    entrypoint: dockerize -wait tcp://mysql-foodtruck-api:3306 -timeout 40s
 
 networks:
-  foodtruck-network:
-    external: true
+  bubble:
+
+volumes:
+  db:
