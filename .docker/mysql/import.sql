@@ -32,8 +32,8 @@ CREATE TABLE `restaurante` (
                                `taxa_frete` decimal(19,2) NOT NULL,
                                `cozinha_id` bigint(20) NOT NULL,
                                `endereco_cidade_id` bigint(20) DEFAULT NULL,
-                               `data_cadastro` datetime(6) not null,
-                               `data_atualizacao` datetime(6) not null,
+                               `data_cadastro` datetime not null,
+                               `data_atualizacao` datetime not null,
                                PRIMARY KEY (`id`),
                                KEY `FK76grk4roudh659skcgbnanthi` (`cozinha_id`),
                                KEY `FKbc0tm7hnvc96d8e7e2ulb05yw` (`endereco_cidade_id`),
@@ -75,6 +75,39 @@ CREATE TABLE `produto` (
                            CONSTRAINT `FKb9jhjyghjcn25guim7q4pt8qx` FOREIGN KEY (`restaurante_id`) REFERENCES `restaurante` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
+CREATE TABLE `grupo` (
+                         `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                         `nome` varchar(255) NOT NULL,
+                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `grupo_permissao` (
+                                   `grupo_id` bigint(20) NOT NULL,
+                                   `permissao_id` bigint(20) NOT NULL,
+                                   KEY `FKh21kiw0y0hxg6birmdf2ef6vy` (`permissao_id`),
+                                   KEY `FKta4si8vh3f4jo3bsslvkscc2m` (`grupo_id`),
+                                   CONSTRAINT `FKh21kiw0y0hxg6birmdf2ef6vy` FOREIGN KEY (`permissao_id`) REFERENCES `permissao` (`id`),
+                                   CONSTRAINT `FKta4si8vh3f4jo3bsslvkscc2m` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `usuario` (
+                           `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                           `data_atualizacao` datetime NOT NULL,
+                           `data_cadastro` datetime NOT NULL,
+                           `email` varchar(255) NOT NULL,
+                           `nome` varchar(255) NOT NULL,
+                           PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `usuario_grupo` (
+                                 `usuario_id` bigint(20) NOT NULL,
+                                 `grupo_id` bigint(20) NOT NULL,
+                                 KEY `FKk30suuy31cq5u36m9am4om9ju` (`grupo_id`),
+                                 KEY `FKdofo9es0esuiahyw2q467crxw` (`usuario_id`),
+                                 CONSTRAINT `FKdofo9es0esuiahyw2q467crxw` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`),
+                                 CONSTRAINT `FKk30suuy31cq5u36m9am4om9ju` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
 insert into cozinha (id, nome) values (1, 'Tailandesa');
 insert into cozinha (id, nome) values (2, 'Indiana');
 insert into cozinha (id, nome) values (3, 'Argentina');
@@ -108,15 +141,10 @@ insert into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) val
 
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Porco com molho agridoce', 'Deliciosa carne suína ao molho especial', 78.90, 1, 1);
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Camarão tailandês', '16 camarões grandes ao molho picante', 110, 1, 1);
-
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Salada picante com carne grelhada', 'Salada de folhas com cortes finos de carne bovina grelhada e nosso molho especial de pimenta vermelha', 87.20, 1, 2);
-
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Garlic Naan', 'Pão tradicional indiano com cobertura de alho', 21, 1, 3);
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Murg Curry', 'Cubos de frango preparados com molho curry e especiarias', 43, 1, 3);
-
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Bife Ancho', 'Corte macio e suculento, com dois dedos de espessura, retirado da parte dianteira do contrafilé', 79, 1, 4);
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('T-Bone', 'Corte muito saboroso, com um osso em formato de T, sendo de um lado o contrafilé e do outro o filé mignon', 89, 1, 4);
-
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, 1, 5);
-
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
