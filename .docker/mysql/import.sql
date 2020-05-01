@@ -50,8 +50,17 @@ CREATE TABLE `permissao` (
                              PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-insert into cozinha (nome) values ('Tailandesa');
-insert into cozinha (nome) values ('Indiana');
+CREATE TABLE `restaurante_forma_pagamento` (
+                                               `restaurante_id` bigint(20) NOT NULL,
+                                               `forma_pagamento_id` bigint(20) NOT NULL,
+                                               KEY `FK7aln770m80358y4olr03hyhh2` (`forma_pagamento_id`),
+                                               KEY `FKa30vowfejemkw7whjvr8pryvj` (`restaurante_id`),
+                                               CONSTRAINT `FK7aln770m80358y4olr03hyhh2` FOREIGN KEY (`forma_pagamento_id`) REFERENCES `forma_pagamento` (`id`),
+                                               CONSTRAINT `FKa30vowfejemkw7whjvr8pryvj` FOREIGN KEY (`restaurante_id`) REFERENCES `restaurante` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+insert into cozinha (id, nome) values (1, 'Tailandesa');
+insert into cozinha (id, nome) values (2, 'Indiana');
 
 insert into estado (id, nome) values (1, 'Minas Gerais');
 insert into estado (id, nome) values (2, 'São Paulo');
@@ -73,3 +82,5 @@ insert into forma_pagamento (id, descricao) values (3, 'Dinheiro');
 
 insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+
+insert into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3);
