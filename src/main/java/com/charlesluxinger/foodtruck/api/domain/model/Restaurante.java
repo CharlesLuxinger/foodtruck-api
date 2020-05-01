@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -34,24 +35,29 @@ public class Restaurante {
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@JsonIgnore
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "endereco_id", referencedColumnName = "id")
 	private Endereco endereco;
 
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "restaurante_forma_pagamento",
 				joinColumns = @JoinColumn(name = "restaurante_id"),
 					inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
 	private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
+	@JsonIgnore
 	@CreationTimestamp
 	@Column(name = "data_cadastro")
 	private LocalDateTime dataCadastro;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Column(name = "data_atualizacao")
 	private LocalDateTime dataAtualizacao;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "restaurante")
 	List<Produto> produtos = new ArrayList<>();
 
