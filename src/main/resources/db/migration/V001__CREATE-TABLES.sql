@@ -55,7 +55,7 @@ CREATE TABLE `forma_pagamento` (
 
 CREATE TABLE `permissao` (
                              `id` bigint(10) NOT NULL AUTO_INCREMENT,
-                             `descricao` varchar(20) NOT NULL,
+                             `descricao` varchar(60) NOT NULL,
                              `nome` varchar(20) NOT NULL,
                              PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
@@ -72,7 +72,7 @@ CREATE TABLE `restaurante_forma_pagamento` (
 CREATE TABLE `produto` (
                            `id` bigint(10) NOT NULL AUTO_INCREMENT,
                            `ativo` bit(1) NOT NULL,
-                           `descricao` varchar(60) NOT NULL,
+                           `descricao` varchar(150) NOT NULL,
                            `nome` varchar(60) NOT NULL,
                            `preco` decimal(5,2) NOT NULL,
                            `restaurante_id` bigint(10) NOT NULL,
