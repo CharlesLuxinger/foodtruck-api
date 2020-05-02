@@ -1,14 +1,13 @@
 package com.charlesluxinger.foodtruck.api.domain.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class ConstraintEntityViolationException extends RuntimeException {
+public class ConstraintEntityViolationException extends ResponseStatusException {
 
     private static final long serialVersionUID = 1L;
 
     public ConstraintEntityViolationException(String message) {
-        super(message);
+        super(HttpStatus.CONFLICT, message);
     }
 }
