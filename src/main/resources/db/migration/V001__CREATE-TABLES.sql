@@ -38,8 +38,8 @@ CREATE TABLE `restaurante` (
                                `taxa_frete` decimal(5,2) NOT NULL,
                                `cozinha_id` bigint(10) NOT NULL,
                                `endereco_id` bigint(10) DEFAULT NULL,
-                               `data_cadastro` datetime not null,
-                               `data_atualizacao` datetime not null,
+                               `data_cadastro` datetime NOT NULL,
+                               `data_atualizacao` datetime NOT NULL,
                                PRIMARY KEY (`id`),
                                KEY `FK76grk4roudh659skcgbnanthi` (`cozinha_id`),
                                KEY `FKnc0aps7r9c6euyqrs6d2v04qa` (`endereco_id`),
@@ -112,4 +112,38 @@ CREATE TABLE `usuario_grupo` (
                                  KEY `FKdofo9es0esuiahyw2q467crxw` (`usuario_id`),
                                  CONSTRAINT `FKdofo9es0esuiahyw2q467crxw` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`),
                                  CONSTRAINT `FKk30suuy31cq5u36m9am4om9ju` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
+
+create table pedido (
+                        `id` bigint(10) NOT NULL AUTO_INCREMENT,
+                        `subtotal` decimal(10,2) NOT NULL,
+                        `taxa_frete` decimal(5,2) NOT NULL,
+                        `valor_total` decimal(10,2) NOT NULL,
+                        `restaurante_id` bigint NOT NULL,
+                        `usuario_cliente_id` bigint NOT NULL,
+                        `forma_pagamento_id` bigint NOT NULL,
+                        `endereco_id` bigint(10) DEFAULT NULL,
+                        `status` varchar(10) NOT NULL,
+                        `data_criacao` datetime NOT NULL,
+                        `data_confirmacao` datetime null,
+                        `data_cancelamento` datetime null,
+                        `data_entrega` datetime null,
+                        PRIMARY KEY (id),
+                        CONSTRAINT `fk_pedido_restaurante` FOREIGN KEY (`restaurante_id`) REFERENCES `restaurante` (`id`),
+                        CONSTRAINT `fk_pedido_usuario_cliente` FOREIGN KEY (`usuario_cliente_id`) REFERENCES `usuario` (`id`),
+                        CONSTRAINT `fk_pedido_forma_pagamento` FOREIGN KEY (`forma_pagamento_id`) REFERENCES `forma_pagamento` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
+
+create table item_pedido (
+                             `id` bigint NOT NULL auto_increment,
+                             `quantidade` smallint(6) NOT NULL,
+                             `preco_unitario` decimal(10,2) NOT NULL,
+                             `preco_total` decimal(10,2) NOT NULL,
+                             `observacao` varchar(255) null,
+                             `pedido_id` bigint NOT NULL,
+                             `produto_id` bigint NOT NULL,
+                             PRIMARY KEY (id),
+                             unique KEY `uk_item_pedido_produto` (`pedido_id`, `produto_id`),
+                             CONSTRAINT `fk_item_pedido_pedido` FOREIGN KEY (`pedido_id`) REFERENCES pedido (`id`),
+                             CONSTRAINT `fk_item_pedido_produto` FOREIGN KEY (`produto_id`) REFERENCES produto (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
