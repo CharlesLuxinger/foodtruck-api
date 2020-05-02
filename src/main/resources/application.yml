@@ -3,6 +3,10 @@ spring:
         password: 12345678
         url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/foodtruck?createDatabaseIfNotExist=true&serverTimezone=UTC
         username: root
+        hikari:
+            maximum-pool-size: 100
+            minimum-idle: 1
+            idle-timeout: 10000
     jpa:
         generate-ddl: true
         hibernate:
