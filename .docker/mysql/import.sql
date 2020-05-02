@@ -1,5 +1,3 @@
-use foodtruck;
-
 CREATE TABLE `estado` (
                           `id` bigint(10) NOT NULL AUTO_INCREMENT,
                           `nome` varchar(60) NOT NULL,
@@ -7,9 +5,9 @@ CREATE TABLE `estado` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `cidade` (
-                          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                          `id` bigint(10) NOT NULL AUTO_INCREMENT,
                           `nome` varchar(60) NOT NULL,
-                          `estado_id` bigint(20) NOT NULL,
+                          `estado_id` bigint(10) NOT NULL,
                           PRIMARY KEY (`id`),
                           KEY `FKkworrwk40xj58kevvh3evi500` (`estado_id`),
                           CONSTRAINT `FKkworrwk40xj58kevvh3evi500` FOREIGN KEY (`estado_id`) REFERENCES `estado` (`id`)
@@ -29,13 +27,13 @@ CREATE TABLE `endereco` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `cozinha` (
-                           `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                           `id` bigint(10) NOT NULL AUTO_INCREMENT,
                            `nome` varchar(30) NOT NULL,
                            PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `restaurante` (
-                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                               `id` bigint(10) NOT NULL AUTO_INCREMENT,
                                `nome` varchar(60) DEFAULT NULL,
                                `taxa_frete` decimal(5,2) NOT NULL,
                                `cozinha_id` bigint(10) NOT NULL,
