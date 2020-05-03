@@ -1,68 +1,62 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
-import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Estado;
 import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.EstadoService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
-@RestController // Possui ambas anotacoes @ResponseBody @Controller
-@RequestMapping(value = "/estados", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+@RestController
+@RequestMapping(value = "/estados")
+@AllArgsConstructor
 public class EstadoController {
 
-	@Autowired
-	private EstadoRepository estadoRepository;
+    private EstadoRepository estadoRepository;
+    private EstadoService estadoService;
 
-	@Autowired
-	private EstadoService estadoService;
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Estado> findAll() {
+        return estadoRepository.findAll();
+    }
 
-	@GetMapping
-	public List<Estado> findAll() {
-		return estadoRepository.findAll();
-	}
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Estado findById(@PathVariable("id") Long id) {
+        return estadoService.findById(id);
+    }
 
-	@GetMapping("/{id}")
-	public Estado findById(@PathVariable("id") Long id) {
-		return estadoRepository.findById(id).get();
-	}
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Estado save(@RequestBody Estado estado) {
+        return estadoRepository.save(estado);
+    }
 
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public Estado save(@RequestBody Estado estado){
-		return estadoRepository.save(estado);
-	}
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Estado update(@PathVariable Long id, @RequestBody Estado estado) {
+        Estado estadoFound = estadoService.findById(id);
 
-	@PutMapping("/{id}")
-	public ResponseEntity<Estado> update(@PathVariable Long id, @RequestBody Estado estado){
-		Optional<Estado> estadoFound = estadoRepository.findById(id);
+        BeanUtils.copyProperties(estado, estadoFound, "id");
 
-		if (estadoFound.isPresent()) {
-			BeanUtils.copyProperties(estado, estadoFound, "id");
-			return ResponseEntity.ok(estadoService.save(estadoFound.get()));
-		}
+        return estadoService.save(estadoFound);
+    }
 
-		return ResponseEntity.notFound().build();
-	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Estado> remove(@PathVariable Long id){
-		try {
-			estadoService.remove(id);
-			return ResponseEntity.noContent().build();
-		} catch (EntityNotFoundException ex) {
-			return ResponseEntity.notFound().build();
-		} catch (ConstraintEntityViolationException ex) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		}
-	}
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id) {
+        estadoService.remove(id);
+    }
 
 }

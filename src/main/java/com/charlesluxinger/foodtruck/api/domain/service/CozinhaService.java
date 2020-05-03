@@ -4,15 +4,16 @@ import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolat
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class CozinhaService {
 
-    @Autowired
     private CozinhaRepository cozinhaRepository;
 
     public Cozinha save(Cozinha cozinha) {
@@ -23,10 +24,14 @@ public class CozinhaService {
         try {
             cozinhaRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
-            throw new EntityNotFoundException(String.format("Cozinha de ID: %d não encontrada.", id));
+            throw new EntityNotFoundException(Cozinha.class, id);
         }
         catch (DataIntegrityViolationException ex) {
-           throw new ConstraintEntityViolationException(String.format("Cozinha de ID: %d não pode ser removida, pois está em uso.", id));
+           throw new ConstraintEntityViolationException(Cozinha.class, id);
         }
+    }
+
+    public Cozinha findById(Long id) {
+        return  cozinhaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Cozinha.class, id));
     }
 }

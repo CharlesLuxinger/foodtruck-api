@@ -1,68 +1,61 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
-import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CozinhaService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
-@RestController // Possui ambas anotacoes @ResponseBody @Controller
-//@RequestMapping(value = "/cozinhas", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+@RestController
 @RequestMapping(value = "/cozinhas")
+@AllArgsConstructor
 public class CozinhaController {
 
-    @Autowired
     private CozinhaRepository cozinhaRepository;
-
-    @Autowired
     private CozinhaService cozinhaService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Cozinha> findAll() {
         return cozinhaRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cozinha> findById(@PathVariable("id") Long id) {
-        Optional<Cozinha> cozinha = cozinhaRepository.findById(id);
-
-        if (cozinha.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(cozinha.get());
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Cozinha findById(@PathVariable("id") Long id) {
+        return cozinhaService.findById(id);
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha save(@RequestBody Cozinha cozinha) {
         return cozinhaService.save(cozinha);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Cozinha> update(@PathVariable("id") Long id, @RequestBody Cozinha cozinha) {
-        Optional<Cozinha> cozinhaFound = cozinhaRepository.findById(id);
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Cozinha update(@PathVariable("id") Long id, @RequestBody Cozinha cozinha) {
+        Cozinha cozinhaFound = cozinhaService.findById(id);
 
-        if (cozinhaFound.isPresent()) {
-            BeanUtils.copyProperties(cozinha, cozinhaFound.get(), "id");
-            return ResponseEntity.ok(cozinhaService.save(cozinhaFound.get()));
-        }
+        BeanUtils.copyProperties(cozinha, cozinhaFound, "id");
 
-        return ResponseEntity.notFound().build();
+        return cozinhaService.save(cozinhaFound);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
-            cozinhaService.remove(id);
+        cozinhaService.remove(id);
     }
 
 }

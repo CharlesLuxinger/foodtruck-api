@@ -2,18 +2,24 @@ package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
+import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.model.Estado;
 import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class EstadoService {
 
-    @Autowired
     private EstadoRepository estadoRepository;
+
+    public Estado findById(Long id) {
+        return  estadoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Estado.class, id));
+    }
 
     public Estado save(Estado estado){
         return estadoRepository.save(estado);
@@ -23,10 +29,11 @@ public class EstadoService {
         try {
             estadoRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
-            throw new EntityNotFoundException(String.format("Estado de ID: %d não encontrada.", id));
+            throw new EntityNotFoundException(Estado.class, id);
         }
         catch (DataIntegrityViolationException ex) {
-            throw new ConstraintEntityViolationException(String.format("Estado de ID: %d não pode ser removida, pois está em uso.", id));
+            throw new ConstraintEntityViolationException(Estado.class, id);
         }
     }
+
 }

@@ -1,14 +1,13 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,99 +17,71 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.charlesluxinger.foodtruck.api.domain.repository.spec.RestauranteFactorySpecs.comFreteGratis;
 import static com.charlesluxinger.foodtruck.api.domain.repository.spec.RestauranteFactorySpecs.porNome;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
+@AllArgsConstructor
 public class RestauranteController {
 
-    @Autowired
     private RestauranteRepository restauranteRepository;
-
-    @Autowired
     private RestauranteService restauranteService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Restaurante> findAll() {
         return restauranteRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Restaurante> findById(@PathVariable Long id) {
-        Optional<Restaurante> restaurante = restauranteRepository.findById(id);
-
-        if (restaurante.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(restaurante.get());
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Restaurante findById(@PathVariable Long id) {
+        return restauranteService.findById(id);
     }
 
-    @PostMapping
-    public ResponseEntity<?> save(@RequestBody Restaurante restaurante) {
-
-        try {
-            restaurante = restauranteService.save(restaurante);
-            return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
-
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Restaurante save(@RequestBody Restaurante restaurante) {
+        return restauranteService.save(restaurante);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Restaurante restaurante) {
-        Optional<Restaurante> restauranteFound = restauranteRepository.findById(id);
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Restaurante update(@PathVariable Long id, @RequestBody Restaurante restaurante) {
+        Restaurante restauranteFound = restauranteService.findById(id);
 
-        try {
-            if (restauranteFound.isPresent()) {
-                BeanUtils.copyProperties(restaurante, restauranteFound, "id",
-                                                                                      "formasPagamento",
-                                                                                      "endereco",
-                                                                                      "dataCadastro",
-                                                                                      "produtos");
-                return ResponseEntity.ok(restauranteService.save(restauranteFound.get()));
-            }
-            return ResponseEntity.notFound().build();
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
+        BeanUtils.copyProperties(restaurante, restauranteFound, "id",
+                "formasPagamento",
+                "endereco",
+                "dataCadastro",
+                "produtos");
+
+        return restauranteService.save(restauranteFound);
     }
 
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate){
-        Optional<Restaurante> restauranteFound = restauranteRepository.findById(id);
+    @PatchMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Restaurante partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate) {
+        Restaurante restauranteFound = restauranteService.findById(id);
 
-        if (restauranteFound.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        merge(fieldsToUpdate, restauranteFound);
 
-        merge(fieldsToUpdate, restauranteFound.get());
-
-        return update(id, restauranteFound.get());
+        return update(id, restauranteFound);
     }
 
-   @DeleteMapping("/{id}")
-    public ResponseEntity<Restaurante> remove(@PathVariable Long id){
-        try {
-            restauranteService.remove(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id) {
+        restauranteService.remove(id);
     }
 
     @GetMapping("/comFreteGratis")
-    public List<Restaurante> restaurantesComFreteGratis(String nome){
+    public List<Restaurante> restaurantesComFreteGratis(String nome) {
         return restauranteRepository.findAll(comFreteGratis().and(porNome(nome)));
     }
 

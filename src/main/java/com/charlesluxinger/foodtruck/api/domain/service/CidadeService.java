@@ -1,34 +1,34 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
+import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
+import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.model.Estado;
 import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
 import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CidadeService {
 
-    @Autowired
     private CidadeRepository cidadeRepository;
+    private EstadoService estadoService;
 
-    @Autowired
-    private EstadoRepository estadoRepository;
+    public Cidade findById(Long id) {
+        return cidadeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Cidade.class, id));
+    }
 
     public Cidade save(Cidade cidade){
-        Long estadoId = cidade.getEstado().getId();
-        Optional<Estado> estado = estadoRepository.findById(estadoId);
-
-        if (estado.isEmpty()) {
-            throw new EntityNotFoundException(String.format("Estado ID: %d não encontrado.", estadoId));
-        }
-
-        cidade.setEstado(estado.get());
+        Estado estado = estadoService.findById(cidade.getEstado().getId());
+        cidade.setEstado(estado);
         return cidadeRepository.save(cidade);
     }
 
@@ -36,7 +36,10 @@ public class CidadeService {
         try {
             cidadeRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
-            throw new EntityNotFoundException(String.format("Cidade de ID: %d não encontrada.", id));
+            throw new EntityNotFoundException(Cidade.class, id);
+        }
+        catch (DataIntegrityViolationException ex) {
+            throw new ConstraintEntityViolationException(Cidade.class, id);
         }
     }
 }

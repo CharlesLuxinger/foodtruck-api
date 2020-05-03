@@ -1,70 +1,59 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CidadeService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/cidades")
+@AllArgsConstructor
 public class CidadeController {
 
-    @Autowired
     private CidadeRepository cidadeRepository;
-
-    @Autowired
     private CidadeService cidadeService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Cidade> findAll() {
         return cidadeRepository.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Cidade findById(@PathVariable Long id) {
-        return cidadeRepository.findById(id).get();
+        return cidadeService.findById(id);
     }
 
-    @PostMapping
-    public ResponseEntity<?> save(@RequestBody Cidade cidade) {
-        try {
-            cidade = cidadeService.save(cidade);
-            return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cidade save(@RequestBody Cidade cidade) {
+        return cidadeService.save(cidade);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Cidade cidade) {
-        Optional<Cidade> cidadeFound = cidadeRepository.findById(id);
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Cidade update(@PathVariable Long id, @RequestBody Cidade cidade) {
+        Cidade cidadeFound = cidadeService.findById(id);
 
-        try {
-            if (cidadeFound.isPresent()) {
-                BeanUtils.copyProperties(cidade, cidadeFound.get(), "id");
-                return ResponseEntity.ok(cidadeService.save(cidadeFound.get()));
-            }
-            return ResponseEntity.notFound().build();
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
+        BeanUtils.copyProperties(cidade, cidadeFound, "id");
+
+        return cidadeService.save(cidadeFound);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Cidade> remove(@PathVariable Long id){
-        try {
-            cidadeService.remove(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        }
+    public void remove(@PathVariable Long id) {
+        cidadeService.remove(id);
     }
 }
