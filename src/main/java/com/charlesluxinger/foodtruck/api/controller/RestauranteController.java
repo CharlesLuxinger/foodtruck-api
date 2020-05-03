@@ -1,5 +1,7 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
+import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
+import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
@@ -48,7 +50,7 @@ public class RestauranteController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurante save(@RequestBody Restaurante restaurante) {
-        return restauranteService.save(restaurante);
+        return saveRestaurante(restaurante);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -61,9 +63,8 @@ public class RestauranteController {
                 "dataCadastro",
                 "produtos");
 
-        return restauranteService.save(restauranteFound);
+        return saveRestaurante(restauranteFound);
     }
-
 
     @PatchMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Restaurante partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate) {
@@ -97,5 +98,13 @@ public class RestauranteController {
 
             ReflectionUtils.setField(field, restauranteTarget, newValue);
         });
+    }
+
+    private Restaurante saveRestaurante(Restaurante restauranteFound) {
+        try {
+            return restauranteService.save(restauranteFound);
+        } catch (EntityNotFoundException e) {
+            throw new DomainException(e.getMessage());
+        }
     }
 }

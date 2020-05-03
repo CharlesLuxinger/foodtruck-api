@@ -1,5 +1,7 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
+import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
+import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CidadeService;
@@ -40,7 +42,7 @@ public class CidadeController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Cidade save(@RequestBody Cidade cidade) {
-        return cidadeService.save(cidade);
+        return saveCidade(cidade);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -49,11 +51,19 @@ public class CidadeController {
 
         BeanUtils.copyProperties(cidade, cidadeFound, "id");
 
-        return cidadeService.save(cidadeFound);
+        return saveCidade(cidadeFound);
     }
 
     @DeleteMapping("/{id}")
     public void remove(@PathVariable Long id) {
         cidadeService.remove(id);
+    }
+
+    private Cidade saveCidade(@RequestBody Cidade cidade) {
+        try {
+            return cidadeService.save(cidade);
+        } catch (EntityNotFoundException e) {
+            throw new DomainException(e.getMessage());
+        }
     }
 }

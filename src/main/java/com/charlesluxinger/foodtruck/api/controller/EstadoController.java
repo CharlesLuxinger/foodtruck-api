@@ -1,5 +1,7 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
+import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
+import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Estado;
 import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.EstadoService;
@@ -7,7 +9,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,7 @@ public class EstadoController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Estado save(@RequestBody Estado estado) {
-        return estadoRepository.save(estado);
+        return saveEstado(estado);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -50,13 +51,21 @@ public class EstadoController {
 
         BeanUtils.copyProperties(estado, estadoFound, "id");
 
-        return estadoService.save(estadoFound);
+        return saveEstado(estadoFound);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
         estadoService.remove(id);
+    }
+
+    private Estado saveEstado(@RequestBody Estado estado) {
+        try {
+            return estadoService.save(estado);
+        } catch (EntityNotFoundException e) {
+            throw new DomainException(e.getMessage());
+        }
     }
 
 }

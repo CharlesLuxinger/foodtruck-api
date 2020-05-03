@@ -1,5 +1,7 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
+import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
+import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CozinhaService;
@@ -40,7 +42,7 @@ public class CozinhaController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha save(@RequestBody Cozinha cozinha) {
-        return cozinhaService.save(cozinha);
+        return saveCozinha(cozinha);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -49,13 +51,21 @@ public class CozinhaController {
 
         BeanUtils.copyProperties(cozinha, cozinhaFound, "id");
 
-        return cozinhaService.save(cozinhaFound);
+        return saveCozinha(cozinhaFound);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
         cozinhaService.remove(id);
+    }
+
+    private Cozinha saveCozinha(@RequestBody Cozinha cozinha) {
+        try {
+            return cozinhaService.save(cozinha);
+        } catch (EntityNotFoundException e) {
+            throw new DomainException(e.getMessage());
+        }
     }
 
 }
