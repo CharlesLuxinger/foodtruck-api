@@ -2,6 +2,7 @@ package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
+import com.charlesluxinger.foodtruck.api.domain.exception.RestauranteNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
@@ -19,7 +20,7 @@ public class RestauranteService {
     private CozinhaService cozinhaService;
 
     public Restaurante findById(Long id) {
-        return  restauranteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Restaurante.class, id));
+        return  restauranteRepository.findById(id).orElseThrow(() -> new RestauranteNotFoundException(id));
     }
 
     public Restaurante save(Restaurante restaurante){
@@ -32,7 +33,7 @@ public class RestauranteService {
         try {
             restauranteRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
-            throw new EntityNotFoundException(Restaurante.class, id);
+            throw new RestauranteNotFoundException(id, ex);
         }
         catch (DataIntegrityViolationException ex) {
             throw new ConstraintEntityViolationException(Restaurante.class, id);

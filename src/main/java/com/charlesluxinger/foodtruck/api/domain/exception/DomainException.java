@@ -7,7 +7,11 @@ public class DomainException extends ResponseStatusException {
 
     private static final long serialVersionUID = 1L;
 
-    public DomainException(String message) {
-        super(HttpStatus.BAD_REQUEST, message);
+    public DomainException(HttpStatus status, String message, Throwable e) {
+        super(status, message, e);
+    }
+
+    public DomainException(HttpStatus status, String message) {
+        super(status, message);
     }
 }

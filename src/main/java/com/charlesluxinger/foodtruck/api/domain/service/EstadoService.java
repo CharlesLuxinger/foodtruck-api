@@ -2,6 +2,7 @@ package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
+import com.charlesluxinger.foodtruck.api.domain.exception.EstadoNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.model.Estado;
 import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
@@ -18,7 +19,7 @@ public class EstadoService {
     private EstadoRepository estadoRepository;
 
     public Estado findById(Long id) {
-        return  estadoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Estado.class, id));
+        return  estadoRepository.findById(id).orElseThrow(() -> new EstadoNotFoundException(id));
     }
 
     public Estado save(Estado estado){
@@ -29,7 +30,7 @@ public class EstadoService {
         try {
             estadoRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
-            throw new EntityNotFoundException(Estado.class, id);
+            throw new EstadoNotFoundException(id, ex);
         }
         catch (DataIntegrityViolationException ex) {
             throw new ConstraintEntityViolationException(Estado.class, id);

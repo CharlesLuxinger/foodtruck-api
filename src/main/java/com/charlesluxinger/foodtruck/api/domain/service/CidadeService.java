@@ -1,5 +1,6 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
+import com.charlesluxinger.foodtruck.api.domain.exception.CidadeNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
@@ -23,7 +24,7 @@ public class CidadeService {
     private EstadoService estadoService;
 
     public Cidade findById(Long id) {
-        return cidadeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Cidade.class, id));
+        return cidadeRepository.findById(id).orElseThrow(() -> new CidadeNotFoundException(id));
     }
 
     public Cidade save(Cidade cidade){
@@ -36,7 +37,7 @@ public class CidadeService {
         try {
             cidadeRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
-            throw new EntityNotFoundException(Cidade.class, id);
+            throw new CidadeNotFoundException(id, ex);
         }
         catch (DataIntegrityViolationException ex) {
             throw new ConstraintEntityViolationException(Cidade.class, id);

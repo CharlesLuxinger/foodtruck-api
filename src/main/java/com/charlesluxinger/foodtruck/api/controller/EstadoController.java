@@ -42,7 +42,7 @@ public class EstadoController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Estado save(@RequestBody Estado estado) {
-        return saveEstado(estado);
+        return estadoService.save(estado);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -51,21 +51,13 @@ public class EstadoController {
 
         BeanUtils.copyProperties(estado, estadoFound, "id");
 
-        return saveEstado(estadoFound);
+        return estadoService.save(estado);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
         estadoService.remove(id);
-    }
-
-    private Estado saveEstado(@RequestBody Estado estado) {
-        try {
-            return estadoService.save(estado);
-        } catch (EntityNotFoundException e) {
-            throw new DomainException(e.getMessage());
-        }
     }
 
 }

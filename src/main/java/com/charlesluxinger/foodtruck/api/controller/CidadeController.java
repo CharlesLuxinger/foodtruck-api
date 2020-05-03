@@ -1,7 +1,7 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
+import com.charlesluxinger.foodtruck.api.domain.exception.EstadoNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CidadeService;
@@ -62,8 +62,8 @@ public class CidadeController {
     private Cidade saveCidade(@RequestBody Cidade cidade) {
         try {
             return cidadeService.save(cidade);
-        } catch (EntityNotFoundException e) {
-            throw new DomainException(e.getMessage());
+        } catch (EstadoNotFoundException e) {
+            throw new EntityNotFoundException(e.getMessage(), e);
         }
     }
 }

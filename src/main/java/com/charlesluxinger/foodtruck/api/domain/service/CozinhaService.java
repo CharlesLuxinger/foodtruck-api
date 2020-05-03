@@ -1,6 +1,7 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
+import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
@@ -24,7 +25,7 @@ public class CozinhaService {
         try {
             cozinhaRepository.deleteById(id);
         }catch (EmptyResultDataAccessException ex){
-            throw new EntityNotFoundException(Cozinha.class, id);
+            throw new CozinhaNotFoundException(id, ex);
         }
         catch (DataIntegrityViolationException ex) {
            throw new ConstraintEntityViolationException(Cozinha.class, id);
@@ -32,6 +33,6 @@ public class CozinhaService {
     }
 
     public Cozinha findById(Long id) {
-        return  cozinhaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Cozinha.class, id));
+        return  cozinhaRepository.findById(id).orElseThrow(() -> new CozinhaNotFoundException(id));
     }
 }

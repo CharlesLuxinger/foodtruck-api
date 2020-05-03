@@ -42,7 +42,7 @@ public class CozinhaController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha save(@RequestBody Cozinha cozinha) {
-        return saveCozinha(cozinha);
+        return cozinhaService.save(cozinha);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -51,21 +51,13 @@ public class CozinhaController {
 
         BeanUtils.copyProperties(cozinha, cozinhaFound, "id");
 
-        return saveCozinha(cozinhaFound);
+        return cozinhaService.save(cozinha);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
         cozinhaService.remove(id);
-    }
-
-    private Cozinha saveCozinha(@RequestBody Cozinha cozinha) {
-        try {
-            return cozinhaService.save(cozinha);
-        } catch (EntityNotFoundException e) {
-            throw new DomainException(e.getMessage());
-        }
     }
 
 }
