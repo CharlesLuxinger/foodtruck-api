@@ -105,7 +105,7 @@ public class RestauranteController {
         try {
             return restauranteService.save(restauranteFound);
         } catch (CozinhaNotFoundException e) {
-            throw new DomainException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+            throw new DomainException(e.getMessage(), e);
         }
     }
 }
