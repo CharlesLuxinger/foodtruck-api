@@ -6,6 +6,7 @@ import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundExceptio
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -47,4 +48,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        ExceptionResponse response = ExceptionResponse.builder()
+                                                      .detail("Body request invalid, check the message sent.")
+                                                      .status(status.value())
+                                                      .title(status.getReasonPhrase())
+                                                      .build();
+
+        return handleExceptionInternal(ex, response, new HttpHeaders(), status, request);
+    }
+
 }
