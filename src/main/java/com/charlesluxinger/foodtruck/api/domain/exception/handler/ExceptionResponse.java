@@ -1,18 +1,18 @@
 package com.charlesluxinger.foodtruck.api.domain.exception.handler;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder(access = AccessLevel.PACKAGE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExceptionResponse {
 
-    @JsonProperty(value = "date_time")
-    private final LocalDateTime dateTime = LocalDateTime.now();
+    private Integer status;
+    private String type;
+    private String title;
+    private String detail;
 
-    private String message;
 }

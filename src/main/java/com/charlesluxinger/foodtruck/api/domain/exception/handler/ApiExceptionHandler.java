@@ -34,12 +34,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         if (body instanceof String){
             body = ExceptionResponse.builder()
-                    .message((String) body)
-                    .build();
+                                    .title(status.getReasonPhrase())
+                                    .status(status.value())
+                                    .detail((String) body)
+                                    .build();
         } else if (body == null){
             body = ExceptionResponse.builder()
-                    .message(status.getReasonPhrase())
-                    .build();
+                                    .status(status.value())
+                                    .title(status.getReasonPhrase())
+                                    .build();
         }
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
