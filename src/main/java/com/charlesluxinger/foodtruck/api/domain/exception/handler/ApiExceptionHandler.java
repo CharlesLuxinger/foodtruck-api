@@ -3,6 +3,8 @@ package com.charlesluxinger.foodtruck.api.domain.exception.handler;
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.stream.Collectors;
 
 @ControllerAdvice()
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -52,8 +56,32 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+        Throwable rootCause = ExceptionUtils.getRootCause(ex);
+        
+        if (rootCause instanceof InvalidFormatException){
+            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+        }
+
         ExceptionResponse response = ExceptionResponse.builder()
                                                       .detail("Body request invalid, check the message sent.")
+                                                      .status(status.value())
+                                                      .title(status.getReasonPhrase())
+                                                      .build();
+
+        return handleExceptionInternal(ex, response, new HttpHeaders(), status, request);
+    }
+
+    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        String path = ex.getPath().stream()
+                                  .map(ref -> ref.getFieldName())
+                                  .collect(Collectors.joining("."));
+
+        String detail = String.format("Property '%s' with value '%s' is incompatible. Correct type is: %s", path, ex.getValue(), ex.getTargetType().getSimpleName());
+
+
+        ExceptionResponse response = ExceptionResponse.builder()
+                                                      .detail(detail)
                                                       .status(status.value())
                                                       .title(status.getReasonPhrase())
                                                       .build();
