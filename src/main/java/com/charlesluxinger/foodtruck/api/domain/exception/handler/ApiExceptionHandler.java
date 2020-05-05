@@ -3,7 +3,9 @@ package com.charlesluxinger.foodtruck.api.domain.exception.handler;
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice()
@@ -57,9 +60,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         Throwable rootCause = ExceptionUtils.getRootCause(ex);
-        
+
         if (rootCause instanceof InvalidFormatException){
             return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+        } else if (rootCause instanceof PropertyBindingException){
+            return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
         }
 
         ExceptionResponse response = ExceptionResponse.builder()
@@ -73,20 +78,36 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-        String path = ex.getPath().stream()
-                                  .map(ref -> ref.getFieldName())
-                                  .collect(Collectors.joining("."));
+        String path = joinPath(ex.getPath());
 
         String detail = String.format("Property '%s' with value '%s' is incompatible. Correct type is: %s", path, ex.getValue(), ex.getTargetType().getSimpleName());
 
+        return handleExceptionInternal(ex, getBody(detail, status), new HttpHeaders(), status, request);
 
-        ExceptionResponse response = ExceptionResponse.builder()
-                                                      .detail(detail)
-                                                      .status(status.value())
-                                                      .title(status.getReasonPhrase())
-                                                      .build();
+    }
 
-        return handleExceptionInternal(ex, response, new HttpHeaders(), status, request);
+    private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
+
+        String path = joinPath(ex.getPath());
+
+        String detail = String.format("Property '%s' not found. It is not correct or remove the property", path);
+
+        return handleExceptionInternal(ex, getBody(detail, status), new HttpHeaders(), status, request);
+
+    }
+
+    private ExceptionResponse getBody(String detail, HttpStatus status) {
+        return ExceptionResponse.builder()
+                                .detail(detail)
+                                .status(status.value())
+                                .title(status.getReasonPhrase())
+                                .build();
+    }
+
+    private String joinPath(List<JsonMappingException.Reference> path) {
+        return path.stream()
+                   .map(ref -> ref.getFieldName())
+                   .collect(Collectors.joining("."));
     }
 
 }

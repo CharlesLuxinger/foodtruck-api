@@ -2,15 +2,18 @@ package com.charlesluxinger.foodtruck.api.controller;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
-import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -68,10 +72,10 @@ public class RestauranteController {
     }
 
     @PatchMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Restaurante partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate) {
+    public Restaurante partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate, HttpServletRequest request) {
         Restaurante restauranteFound = restauranteService.findById(id);
 
-        merge(fieldsToUpdate, restauranteFound);
+        merge(fieldsToUpdate, restauranteFound, request);
 
         return update(id, restauranteFound);
     }
@@ -87,18 +91,30 @@ public class RestauranteController {
         return restauranteRepository.findAll(comFreteGratis().and(porNome(nome)));
     }
 
-    private void merge(Map<String, Object> fieldsToUpdate, Restaurante restauranteTarget) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Restaurante restauranteSource = objectMapper.convertValue(fieldsToUpdate, Restaurante.class);
+    private void merge(Map<String, Object> fieldsToUpdate, Restaurante restauranteTarget, HttpServletRequest request) {
+        ServletServerHttpRequest httpRequest = new ServletServerHttpRequest(request);
 
-        fieldsToUpdate.forEach((fieldName, fieldValue) -> {
-            Field field = ReflectionUtils.findField(Restaurante.class, fieldName);
-            field.setAccessible(true);
+        try {
 
-            Object newValue = ReflectionUtils.getField(field, restauranteSource);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
-            ReflectionUtils.setField(field, restauranteTarget, newValue);
-        });
+            Restaurante restauranteSource = objectMapper.convertValue(fieldsToUpdate, Restaurante.class);
+
+            fieldsToUpdate.forEach((fieldName, fieldValue) -> {
+                Field field = ReflectionUtils.findField(Restaurante.class, fieldName);
+                field.setAccessible(true);
+
+                Object newValue = ReflectionUtils.getField(field, restauranteSource);
+
+                ReflectionUtils.setField(field, restauranteTarget, newValue);
+            });
+
+        } catch (IllegalArgumentException ex) {
+            Throwable cause = ExceptionUtils.getRootCause(ex);
+            throw new HttpMessageNotReadableException(ex.getMessage(), cause, httpRequest);
+        }
     }
 
     private Restaurante saveRestaurante(Restaurante restauranteFound) {
