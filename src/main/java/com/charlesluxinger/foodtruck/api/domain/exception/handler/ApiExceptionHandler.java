@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.parsing.Problem;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,19 +71,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleTypeMismatch(ex, headers, status, request);
     }
 
-    private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String detail = String.format("The URL parameter '%s' was given the value '%s', which is of an invalid type. Correct and enter a value compatible with type %s.",
-                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
-
-        ExceptionResponse response = ExceptionResponse.builder()
-                                                        .detail(detail)
-                                                        .status(status.value())
-                                                        .title(status.getReasonPhrase())
-                                                      .build();
-
-        return handleExceptionInternal(ex, response, headers, status, request);
-    }
-
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
@@ -92,13 +82,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
         }
 
-        ExceptionResponse response = ExceptionResponse.builder()
-                                                      .detail("Body request invalid, check the message sent.")
-                                                      .status(status.value())
-                                                      .title(status.getReasonPhrase())
-                                                      .build();
+        ExceptionResponse response = exceptionResponseBuilder(status, "Body request invalid, check the message sent.");
 
         return handleExceptionInternal(ex, response, new HttpHeaders(), status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
+                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        String detail = String.format("The %s resource, which you tried to access, does not exist.",
+                ex.getRequestURL());
+
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String detail = String.format("The URL parameter '%s' was given the value '%s', which is of an invalid type. Correct and enter a value compatible with type %s.",
+                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), headers, status, request);
     }
 
     private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -107,7 +110,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String detail = String.format("Property '%s' with value '%s' is incompatible. Correct type is: %s", path, ex.getValue(), ex.getTargetType().getSimpleName());
 
-        return handleExceptionInternal(ex, getBody(detail, status), new HttpHeaders(), status, request);
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), new HttpHeaders(), status, request);
 
     }
 
@@ -117,16 +120,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String detail = String.format("Property '%s' not found. It is not correct or remove the property", path);
 
-        return handleExceptionInternal(ex, getBody(detail, status), new HttpHeaders(), status, request);
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), new HttpHeaders(), status, request);
 
     }
 
-    private ExceptionResponse getBody(String detail, HttpStatus status) {
+    private ExceptionResponse exceptionResponseBuilder(HttpStatus status, @NotNull String detail) {
         return ExceptionResponse.builder()
-                                .detail(detail)
-                                .status(status.value())
-                                .title(status.getReasonPhrase())
-                                .build();
+                .detail(detail)
+                .status(status.value())
+                .title(status.getReasonPhrase())
+                .build();
     }
 
     private String joinPath(List<JsonMappingException.Reference> path) {
