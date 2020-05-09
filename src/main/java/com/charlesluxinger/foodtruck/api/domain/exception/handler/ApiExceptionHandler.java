@@ -97,6 +97,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), headers, status, request);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        String detail = "An unexpected internal system error has occurred. Try again and if the problem persists, contact your system administrator.";
+
+        ex.printStackTrace();
+
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), new HttpHeaders(), status, request);
+    }
+
     private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String detail = String.format("The URL parameter '%s' was given the value '%s', which is of an invalid type. Correct and enter a value compatible with type %s.",
                 ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
