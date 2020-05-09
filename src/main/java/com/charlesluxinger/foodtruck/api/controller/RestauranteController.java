@@ -95,7 +95,6 @@ public class RestauranteController {
         ServletServerHttpRequest httpRequest = new ServletServerHttpRequest(request);
 
         try {
-
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);

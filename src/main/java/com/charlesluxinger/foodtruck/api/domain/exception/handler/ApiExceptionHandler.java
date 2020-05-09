@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
@@ -54,6 +56,29 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        if (ex instanceof MethodArgumentTypeMismatchException){
+            return handleMethodArgumentTypeMismatchException((MethodArgumentTypeMismatchException)ex, headers, status, request);
+        }
+
+
+        return super.handleTypeMismatch(ex, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String detail = String.format("The URL parameter '%s' was given the value '%s', which is of an invalid type. Correct and enter a value compatible with type %s.",
+                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+
+        ExceptionResponse response = ExceptionResponse.builder()
+                                                        .detail(detail)
+                                                        .status(status.value())
+                                                        .title(status.getReasonPhrase())
+                                                      .build();
+
+        return handleExceptionInternal(ex, response, headers, status, request);
     }
 
     @Override
