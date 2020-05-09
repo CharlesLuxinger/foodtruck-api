@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -115,7 +116,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String detail = "One or more fields are invalid. Fill in correctly and try again.";
 
-        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), headers, status, request);
+        BindingResult bindingResult = ex.getBindingResult();
+
+        List<ExceptionResponse.Field> fields = bindingResult.getFieldErrors()
+                                                            .stream()
+                                                            .map(fieldError -> ExceptionResponse.Field
+                                                                    .builder()
+                                                                    .name(fieldError.getField())
+                                                                    .userMessage(fieldError.getDefaultMessage())
+                                                                    .build())
+                                                            .collect(Collectors.toList());
+
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail, fields), headers, status, request);
     }
 
     private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -146,10 +158,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ExceptionResponse exceptionResponseBuilder(HttpStatus status, @NotNull String detail) {
+        return exceptionResponseBuilder(status, detail, null);
+    }
+
+    private ExceptionResponse exceptionResponseBuilder(HttpStatus status, String detail, List<ExceptionResponse.Field> fields) {
         return ExceptionResponse.builder()
                 .detail(detail)
                 .status(status.value())
                 .title(status.getReasonPhrase())
+                .fields(fields)
                 .build();
     }
 
