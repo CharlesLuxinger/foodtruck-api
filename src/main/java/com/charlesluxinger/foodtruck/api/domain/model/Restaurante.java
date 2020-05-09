@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,6 +26,7 @@ public class Restaurante {
 	@EqualsAndHashCode.Include
 	private Long id;
 
+	@NotNull
 	@Column(name = "nome", length = 30, nullable = false)
 	private String nome;
 

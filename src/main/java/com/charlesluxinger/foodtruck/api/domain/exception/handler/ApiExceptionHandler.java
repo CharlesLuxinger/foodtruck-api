@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -40,6 +41,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintEntityViolationException.class)
     public ResponseEntity<?> handleConstraintEntityViolationException(ConstraintEntityViolationException ex, WebRequest request){
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        String detail = "An unexpected internal system error has occurred. Try again and if the problem persists, contact your system administrator.";
+
+        ex.printStackTrace();
+
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), new HttpHeaders(), status, request);
     }
 
     @Override
@@ -97,15 +109,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), headers, status, request);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-        String detail = "An unexpected internal system error has occurred. Try again and if the problem persists, contact your system administrator.";
+        String detail = "One or more fields are invalid. Fill in correctly and try again.";
 
-        ex.printStackTrace();
-
-        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), new HttpHeaders(), status, request);
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), headers, status, request);
     }
 
     private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
