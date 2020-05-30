@@ -1,6 +1,6 @@
 package com.charlesluxinger.foodtruck.api.domain.model;
 
-import com.charlesluxinger.foodtruck.api.domain.model.Groups.CadastroRestaurante;
+import com.charlesluxinger.foodtruck.api.domain.model.Groups.CozinhaId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -27,7 +27,7 @@ import java.util.List;
 public class Cozinha {
 
 	@Id
-	@NotNull(groups = CadastroRestaurante.class)
+	@NotNull(groups = CozinhaId.class)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;

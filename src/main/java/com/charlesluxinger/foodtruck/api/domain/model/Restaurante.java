@@ -1,6 +1,6 @@
 package com.charlesluxinger.foodtruck.api.domain.model;
 
-import com.charlesluxinger.foodtruck.api.domain.model.Groups.CadastroRestaurante;
+import com.charlesluxinger.foodtruck.api.domain.model.Groups.CozinhaId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -25,6 +25,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,16 +41,19 @@ public class Restaurante {
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@NotBlank(groups = CadastroRestaurante.class)
+	@ConvertGroup(to = CozinhaId.class)
+	@NotBlank
 	@Column(name = "nome", length = 30, nullable = false)
 	private String nome;
 
-	@PositiveOrZero(groups = CadastroRestaurante.class)
+	@ConvertGroup(to = CozinhaId.class)
+	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 
 	@Valid
-	@NotNull(groups = CadastroRestaurante.class)
+	@ConvertGroup(to = CozinhaId.class)
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
