@@ -60,7 +60,7 @@ public class RestauranteController {
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Restaurante update(@PathVariable Long id, @RequestBody Restaurante restaurante) {
+    public Restaurante update(@PathVariable Long id, @Valid @RequestBody Restaurante restaurante) {
         Restaurante restauranteFound = restauranteService.findById(id);
 
         BeanUtils.copyProperties(restaurante, restauranteFound, "id",

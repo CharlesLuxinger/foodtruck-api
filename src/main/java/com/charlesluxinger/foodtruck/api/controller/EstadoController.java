@@ -1,7 +1,5 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
-import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Estado;
 import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.EstadoService;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -41,12 +40,12 @@ public class EstadoController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Estado save(@RequestBody Estado estado) {
+    public Estado save(@Valid @RequestBody Estado estado) {
         return estadoService.save(estado);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Estado update(@PathVariable Long id, @RequestBody Estado estado) {
+    public Estado update(@PathVariable Long id, @Valid @RequestBody Estado estado) {
         Estado estadoFound = estadoService.findById(id);
 
         BeanUtils.copyProperties(estado, estadoFound, "id");

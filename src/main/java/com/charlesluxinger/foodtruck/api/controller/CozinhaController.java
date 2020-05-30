@@ -45,7 +45,7 @@ public class CozinhaController {
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Cozinha update(@PathVariable("id") Long id, @RequestBody Cozinha cozinha) {
+    public Cozinha update(@PathVariable("id") Long id, @Valid @RequestBody Cozinha cozinha) {
         Cozinha cozinhaFound = cozinhaService.findById(id);
 
         BeanUtils.copyProperties(cozinha, cozinhaFound, "id");

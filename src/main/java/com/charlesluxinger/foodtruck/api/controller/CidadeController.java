@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -41,12 +42,12 @@ public class CidadeController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade save(@RequestBody Cidade cidade) {
+    public Cidade save(@Valid @RequestBody Cidade cidade) {
         return saveCidade(cidade);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Cidade update(@PathVariable Long id, @RequestBody Cidade cidade) {
+    public Cidade update(@PathVariable Long id, @Valid @RequestBody Cidade cidade) {
         Cidade cidadeFound = cidadeService.findById(id);
 
         BeanUtils.copyProperties(cidade, cidadeFound, "id");
