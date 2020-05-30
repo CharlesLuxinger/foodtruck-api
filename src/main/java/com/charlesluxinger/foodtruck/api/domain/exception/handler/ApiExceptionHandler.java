@@ -3,6 +3,7 @@ package com.charlesluxinger.foodtruck.api.domain.exception.handler;
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
+import com.charlesluxinger.foodtruck.api.domain.exception.ValidationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
@@ -52,6 +53,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ex.printStackTrace();
 
         return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler({ ValidationException.class })
+    public ResponseEntity<Object> handleValidacaoException(ValidationException ex, WebRequest request) {
+        return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(),
+                HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
@@ -112,21 +119,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        String detail = "One or more fields are invalid. Fill in correctly and try again.";
-
-        BindingResult bindingResult = ex.getBindingResult();
-
-        List<ExceptionResponse.Field> fields = bindingResult.getFieldErrors()
-                                                            .stream()
-                                                            .map(fieldError -> ExceptionResponse.Field
-                                                                    .builder()
-                                                                    .name(fieldError.getField())
-                                                                    .userMessage(fieldError.getDefaultMessage())
-                                                                    .build())
-                                                            .collect(Collectors.toList());
-
-        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail, fields), headers, status, request);
+        return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
     }
 
     private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -154,6 +147,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail), new HttpHeaders(), status, request);
 
+    }
+
+    private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpHeaders headers,
+                                                            HttpStatus status, WebRequest request) {
+        String detail = "One or more fields are invalid. Fill in correctly and try again.";
+
+        List<ExceptionResponse.Field> fields = bindingResult.getFieldErrors()
+                                                            .stream()
+                                                            .map(fieldError -> ExceptionResponse.Field
+                                                                    .builder()
+                                                                    .name(fieldError.getField())
+                                                                    .userMessage(fieldError.getDefaultMessage())
+                                                                    .build())
+                                                            .collect(Collectors.toList());
+
+        return handleExceptionInternal(ex, exceptionResponseBuilder(status, detail, fields), headers, status, request);
     }
 
     private ExceptionResponse exceptionResponseBuilder(HttpStatus status, @NotNull String detail) {

@@ -2,6 +2,7 @@ package com.charlesluxinger.foodtruck.api.controller;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
+import com.charlesluxinger.foodtruck.api.domain.exception.ValidationException;
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
@@ -15,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -42,6 +45,7 @@ public class RestauranteController {
 
     private RestauranteRepository restauranteRepository;
     private RestauranteService restauranteService;
+    private SmartValidator validator;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Restaurante> findAll() {
@@ -77,6 +81,7 @@ public class RestauranteController {
         Restaurante restauranteFound = restauranteService.findById(id);
 
         merge(fieldsToUpdate, restauranteFound, request);
+        validate(restauranteFound, "restaurante");
 
         return update(id, restauranteFound);
     }
@@ -90,6 +95,15 @@ public class RestauranteController {
     @GetMapping("/comFreteGratis")
     public List<Restaurante> restaurantesComFreteGratis(String nome) {
         return restauranteRepository.findAll(comFreteGratis().and(porNome(nome)));
+    }
+
+    private void validate(Restaurante restaurante, String objectName) {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
+        validator.validate(restaurante, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
     }
 
     private void merge(Map<String, Object> fieldsToUpdate, Restaurante restauranteTarget, HttpServletRequest request) {
