@@ -1,7 +1,5 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
-import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CozinhaService;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -41,7 +40,7 @@ public class CozinhaController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha save(@RequestBody Cozinha cozinha) {
+    public Cozinha save(@Valid @RequestBody Cozinha cozinha) {
         return cozinhaService.save(cozinha);
     }
 

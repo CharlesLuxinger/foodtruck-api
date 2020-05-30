@@ -1,16 +1,21 @@
 package com.charlesluxinger.foodtruck.api.domain.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
+import com.charlesluxinger.foodtruck.api.domain.model.Groups.CadastroRestaurante;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +27,12 @@ import java.util.List;
 public class Cozinha {
 
 	@Id
-	@NotNull
+	@NotNull(groups = CadastroRestaurante.class)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private Long id;
 
+	@NotBlank
 	@JsonProperty(value = "descricao")
 	@Column(name = "NOME", length = 30, nullable = false)
 	private String nome;

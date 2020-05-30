@@ -2,6 +2,7 @@ package com.charlesluxinger.foodtruck.api.controller;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
+import com.charlesluxinger.foodtruck.api.domain.model.Groups;
 import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,7 +29,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class RestauranteController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante save(@RequestBody @Valid Restaurante restaurante) {
+    public Restaurante save(@RequestBody @Validated(Groups.CadastroRestaurante.class) Restaurante restaurante) {
         return saveRestaurante(restaurante);
     }
 
