@@ -2,6 +2,7 @@ package com.charlesluxinger.foodtruck.api.domain.model;
 
 import com.charlesluxinger.foodtruck.api.domain.model.Groups.CozinhaId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -56,6 +57,7 @@ public class Restaurante {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "cozinha_id", nullable = false)
+	@JsonIgnoreProperties(value = "nome", allowGetters = true)
 	private Cozinha cozinha;
 
 	@JsonIgnore
