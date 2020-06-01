@@ -7,7 +7,7 @@ import com.charlesluxinger.foodtruck.api.domain.model.Produto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +23,10 @@ public abstract class RestauranteMixin {
     private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
     @JsonIgnore
-    private LocalDateTime dataCadastro;
+    private OffsetDateTime dataCadastro;
 
     @JsonIgnore
-    private LocalDateTime dataAtualizacao;
+    private OffsetDateTime dataAtualizacao;
 
     @JsonIgnore
     List<Produto> produtos = new ArrayList<>();

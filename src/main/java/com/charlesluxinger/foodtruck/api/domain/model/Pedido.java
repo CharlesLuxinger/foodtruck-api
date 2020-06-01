@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,16 +44,16 @@ public class Pedido {
 
     @CreationTimestamp
     @JsonProperty(value = "data_criacao")
-    private LocalDateTime dataCriacao;
+    private OffsetDateTime dataCriacao;
 
     @JsonProperty(value = "data_confirmacao")
-    private LocalDateTime dataConfirmacao;
+    private OffsetDateTime dataConfirmacao;
 
     @JsonProperty(value = "data_cancelamento")
-    private LocalDateTime dataCancelamento;
+    private OffsetDateTime dataCancelamento;
 
     @JsonProperty(value = "data_entrega")
-    private LocalDateTime dataEntrega;
+    private OffsetDateTime dataEntrega;
 
     @ManyToOne
     @JoinColumn(nullable = false)
