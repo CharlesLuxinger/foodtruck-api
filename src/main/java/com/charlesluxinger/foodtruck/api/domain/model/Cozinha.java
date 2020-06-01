@@ -1,7 +1,6 @@
 package com.charlesluxinger.foodtruck.api.domain.model;
 
 import com.charlesluxinger.foodtruck.api.domain.model.Groups.CozinhaId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.EqualsAndHashCode;
@@ -37,7 +36,6 @@ public class Cozinha {
 	@Column(name = "NOME", length = 30, nullable = false)
 	private String nome;
 
-	@JsonIgnore
 	@OneToMany(mappedBy = "cozinha")
 	private List<Restaurante> restaurantes = new ArrayList<>();
 
