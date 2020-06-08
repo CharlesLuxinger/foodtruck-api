@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -23,7 +22,6 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -69,26 +67,12 @@ public class RestauranteController {
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestauranteModel update(@PathVariable Long id, @Valid @RequestBody Restaurante restaurante) {
+    public RestauranteModel update(@PathVariable Long id, @Valid @RequestBody RestaurantePayload restaurantePayload) {
         Restaurante restauranteFound = restauranteService.findById(id);
 
-        BeanUtils.copyProperties(restaurante, restauranteFound, "id",
-                "formasPagamento",
-                "endereco",
-                "dataCadastro",
-                "produtos");
+        restauranteMapper.copyToDomainObject(restaurantePayload, restauranteFound);
 
         return restauranteMapper.toModel(saveRestaurante(restauranteFound));
-    }
-
-    @PatchMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestauranteModel partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate, HttpServletRequest request) {
-        Restaurante restauranteFound = restauranteService.findById(id);
-
-        merge(fieldsToUpdate, restauranteFound, request);
-        validate(restauranteFound, "restaurante");
-
-        return update(id, restauranteFound);
     }
 
     @DeleteMapping("/{id}")
