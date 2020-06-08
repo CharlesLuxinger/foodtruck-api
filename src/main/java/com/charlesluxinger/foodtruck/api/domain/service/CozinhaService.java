@@ -25,6 +25,7 @@ public class CozinhaService {
     public void remove(Long id) {
         try {
             cozinhaRepository.deleteById(id);
+            cozinhaRepository.flush();
         }catch (EmptyResultDataAccessException ex){
             throw new CozinhaNotFoundException(id, ex);
         }

@@ -33,6 +33,7 @@ public class CidadeService {
     public void remove(Long id) {
         try {
             cidadeRepository.deleteById(id);
+            cidadeRepository.flush();
         }catch (EmptyResultDataAccessException ex){
             throw new CidadeNotFoundException(id, ex);
         }

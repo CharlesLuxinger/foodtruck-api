@@ -29,6 +29,7 @@ public class EstadoService {
     public void remove(Long id){
         try {
             estadoRepository.deleteById(id);
+            estadoRepository.flush();
         }catch (EmptyResultDataAccessException ex){
             throw new EstadoNotFoundException(id, ex);
         }
