@@ -2,8 +2,8 @@ package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.RestauranteNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
-import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
+import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
+import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

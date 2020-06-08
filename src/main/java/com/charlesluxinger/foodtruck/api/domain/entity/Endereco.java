@@ -1,11 +1,10 @@
-package com.charlesluxinger.foodtruck.api.domain.model;
+package com.charlesluxinger.foodtruck.api.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

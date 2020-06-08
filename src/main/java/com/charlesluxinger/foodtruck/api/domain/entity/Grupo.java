@@ -1,4 +1,4 @@
-package com.charlesluxinger.foodtruck.api.domain.model;
+package com.charlesluxinger.foodtruck.api.domain.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

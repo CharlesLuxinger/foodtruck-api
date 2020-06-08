@@ -1,6 +1,6 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
+import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CozinhaService;
 import lombok.AllArgsConstructor;

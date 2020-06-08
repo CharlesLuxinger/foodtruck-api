@@ -2,7 +2,7 @@ package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.model.Cozinha;
+import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

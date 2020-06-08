@@ -1,6 +1,6 @@
-package com.charlesluxinger.foodtruck.api.domain.model;
+package com.charlesluxinger.foodtruck.api.domain.entity;
 
-import com.charlesluxinger.foodtruck.api.domain.model.Groups.CozinhaId;
+import com.charlesluxinger.foodtruck.api.domain.entity.Groups.CozinhaId;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -2,7 +2,7 @@ package com.charlesluxinger.foodtruck.api.controller;
 
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EstadoNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.model.Cidade;
+import com.charlesluxinger.foodtruck.api.domain.entity.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CidadeService;
 import lombok.AllArgsConstructor;

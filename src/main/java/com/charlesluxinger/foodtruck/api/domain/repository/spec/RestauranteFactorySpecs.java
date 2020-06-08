@@ -1,6 +1,6 @@
 package com.charlesluxinger.foodtruck.api.domain.repository.spec;
 
-import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
+import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;

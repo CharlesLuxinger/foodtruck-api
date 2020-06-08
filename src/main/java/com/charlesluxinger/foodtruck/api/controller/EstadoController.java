@@ -1,6 +1,6 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.model.Estado;
+import com.charlesluxinger.foodtruck.api.domain.entity.Estado;
 import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.EstadoService;
 import lombok.AllArgsConstructor;

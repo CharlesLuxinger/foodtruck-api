@@ -1,11 +1,14 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
+import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.exception.ValidationException;
-import com.charlesluxinger.foodtruck.api.domain.model.Restaurante;
+import com.charlesluxinger.foodtruck.api.domain.model.RestauranteModel;
+import com.charlesluxinger.foodtruck.api.domain.model.RestaurantePayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
+import com.charlesluxinger.foodtruck.api.mapper.RestauranteMapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -46,25 +49,27 @@ public class RestauranteController {
     private RestauranteRepository restauranteRepository;
     private RestauranteService restauranteService;
     private SmartValidator validator;
+    private RestauranteMapper restauranteMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Restaurante> findAll() {
-        return restauranteRepository.findAll();
+    public List<RestauranteModel> findAll() {
+        return restauranteMapper.toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Restaurante findById(@PathVariable Long id) {
-        return restauranteService.findById(id);
+    public RestauranteModel findById(@PathVariable Long id) {
+        return restauranteMapper.toModel(restauranteService.findById(id));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante save(@RequestBody @Valid Restaurante restaurante) {
-        return saveRestaurante(restaurante);
+    public RestauranteModel save(@RequestBody @Valid RestaurantePayload restaurante) {
+        var restauranteSaved = saveRestaurante(restauranteMapper.toDomainObject(restaurante));
+        return restauranteMapper.toModel(restauranteSaved);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Restaurante update(@PathVariable Long id, @Valid @RequestBody Restaurante restaurante) {
+    public RestauranteModel update(@PathVariable Long id, @Valid @RequestBody Restaurante restaurante) {
         Restaurante restauranteFound = restauranteService.findById(id);
 
         BeanUtils.copyProperties(restaurante, restauranteFound, "id",
@@ -73,11 +78,11 @@ public class RestauranteController {
                 "dataCadastro",
                 "produtos");
 
-        return saveRestaurante(restauranteFound);
+        return restauranteMapper.toModel(saveRestaurante(restauranteFound));
     }
 
     @PatchMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Restaurante partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate, HttpServletRequest request) {
+    public RestauranteModel partialUpdate(@PathVariable Long id, @RequestBody Map<String, Object> fieldsToUpdate, HttpServletRequest request) {
         Restaurante restauranteFound = restauranteService.findById(id);
 
         merge(fieldsToUpdate, restauranteFound, request);
@@ -131,9 +136,9 @@ public class RestauranteController {
         }
     }
 
-    private Restaurante saveRestaurante(Restaurante restauranteFound) {
+    private Restaurante saveRestaurante(Restaurante restaurante) {
         try {
-            return restauranteService.save(restauranteFound);
+            return restauranteService.save(restaurante);
         } catch (CozinhaNotFoundException e) {
             throw new DomainException(e.getMessage(), e);
         }

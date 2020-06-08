@@ -16,7 +16,7 @@ public class FoodtruckApiApplication {
 	void started() {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(FoodtruckApiApplication.class, args);
 	}
