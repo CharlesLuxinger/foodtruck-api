@@ -1,10 +1,11 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
+import com.charlesluxinger.foodtruck.api.domain.model.CozinhaModel;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.CozinhaPayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CozinhaService;
+import com.charlesluxinger.foodtruck.api.mapper.CozinhaMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,32 +26,34 @@ import java.util.List;
 @AllArgsConstructor
 public class CozinhaController {
 
-    private CozinhaRepository cozinhaRepository;
-    private CozinhaService cozinhaService;
+    private final CozinhaRepository cozinhaRepository;
+    private final CozinhaService cozinhaService;
+    private final CozinhaMapper cozinhaMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Cozinha> findAll() {
-        return cozinhaRepository.findAll();
+    public List<CozinhaModel> findAll() {
+        return cozinhaMapper.toCollectionModel(cozinhaRepository.findAll());
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Cozinha findById(@PathVariable("id") Long id) {
-        return cozinhaService.findById(id);
+    public CozinhaModel findById(@PathVariable("id") Long id) {
+        return cozinhaMapper.toModel(cozinhaService.findById(id));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha save(@Valid @RequestBody Cozinha cozinha) {
-        return cozinhaService.save(cozinha);
+    public CozinhaModel save(@Valid @RequestBody CozinhaPayload cozinhaPayload) {
+        var cozinha = cozinhaMapper.toDomainObject(cozinhaPayload);
+        return cozinhaMapper.toModel(cozinhaService.save(cozinha));
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Cozinha update(@PathVariable("id") Long id, @Valid @RequestBody Cozinha cozinha) {
-        Cozinha cozinhaFound = cozinhaService.findById(id);
+    public CozinhaModel update(@PathVariable("id") Long id, @Valid @RequestBody CozinhaPayload cozinhaPayload) {
+        var cozinhaFound = cozinhaService.findById(id);
 
-        BeanUtils.copyProperties(cozinha, cozinhaFound, "id");
+        cozinhaMapper.copyToDomainObject(cozinhaPayload, cozinhaFound);
 
-        return cozinhaService.save(cozinha);
+        return cozinhaMapper.toModel(cozinhaService.save(cozinhaFound));
     }
 
     @DeleteMapping("/{id}")

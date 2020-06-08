@@ -3,7 +3,7 @@ package com.charlesluxinger.foodtruck.api.mapper;
 import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.model.RestauranteModel;
-import com.charlesluxinger.foodtruck.api.domain.model.RestaurantePayload;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.RestaurantePayload;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

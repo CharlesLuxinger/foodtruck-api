@@ -5,7 +5,7 @@ import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundExcepti
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.exception.ValidationException;
 import com.charlesluxinger.foodtruck.api.domain.model.RestauranteModel;
-import com.charlesluxinger.foodtruck.api.domain.model.RestaurantePayload;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.RestaurantePayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
 import com.charlesluxinger.foodtruck.api.mapper.RestauranteMapper;

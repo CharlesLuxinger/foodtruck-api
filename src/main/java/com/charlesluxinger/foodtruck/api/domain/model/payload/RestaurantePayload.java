@@ -1,4 +1,4 @@
-package com.charlesluxinger.foodtruck.api.domain.model;
+package com.charlesluxinger.foodtruck.api.domain.model.payload;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,5 +22,5 @@ public class RestaurantePayload {
 
 	@Valid
 	@NotNull
-	private CozinhaPayload cozinha;
+	private CozinhaIdPayload cozinha;
 }

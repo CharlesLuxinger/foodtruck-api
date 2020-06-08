@@ -1,12 +1,14 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
+import com.charlesluxinger.foodtruck.api.domain.entity.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.exception.EntityNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EstadoNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.entity.Cidade;
+import com.charlesluxinger.foodtruck.api.domain.model.CidadeModel;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.CidadePayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.CidadeService;
+import com.charlesluxinger.foodtruck.api.mapper.CidadeMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,32 +29,34 @@ import java.util.List;
 @AllArgsConstructor
 public class CidadeController {
 
-    private CidadeRepository cidadeRepository;
-    private CidadeService cidadeService;
+    private final CidadeRepository cidadeRepository;
+    private final CidadeService cidadeService;
+    private final CidadeMapper cidadeMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Cidade> findAll() {
-        return cidadeRepository.findAll();
+    public List<CidadeModel> findAll() {
+        return cidadeMapper.toCollectionModel(cidadeRepository.findAll());
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Cidade findById(@PathVariable Long id) {
-        return cidadeService.findById(id);
+    public CidadeModel findById(@PathVariable Long id) {
+        return cidadeMapper.toModel(cidadeService.findById(id));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade save(@Valid @RequestBody Cidade cidade) {
-        return saveCidade(cidade);
+    public CidadeModel save(@Valid @RequestBody CidadePayload cidadePayload) {
+        var cidade = cidadeMapper.toDomainObject(cidadePayload);
+       return cidadeMapper.toModel(saveCidade(cidade));
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Cidade update(@PathVariable Long id, @Valid @RequestBody Cidade cidade) {
-        Cidade cidadeFound = cidadeService.findById(id);
+    public CidadeModel update(@PathVariable Long id, @Valid @RequestBody CidadePayload cidadePayload) {
+        var cidadeFound = cidadeService.findById(id);
 
-        BeanUtils.copyProperties(cidade, cidadeFound, "id");
+        cidadeMapper.copyToDomainObject(cidadePayload, cidadeFound);
 
-        return saveCidade(cidadeFound);
+        return cidadeMapper.toModel(saveCidade(cidadeFound));
     }
 
     @DeleteMapping("/{id}")
