@@ -102,6 +102,7 @@ CREATE TABLE `usuario` (
                            `data_cadastro` datetime NOT NULL,
                            `email` varchar(20) NOT NULL,
                            `nome` varchar(60) NOT NULL,
+                           `senha` varchar(60) NOT NULL,
                            PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
 

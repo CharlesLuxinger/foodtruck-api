@@ -1,5 +1,6 @@
 package com.charlesluxinger.foodtruck.api.domain.entity;
 
+import com.charlesluxinger.foodtruck.api.domain.model.payload.SenhaPayload;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,8 @@ public class Usuario {
     @Column(nullable = false)
     private String email;
 
+    private String senha;
+
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private OffsetDateTime dataCadastro;
@@ -46,5 +49,9 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "grupo_id"))
     private List<Grupo> grupos = new ArrayList<>();
+
+    public boolean isSenha(String senha) {
+        return getSenha().equals(senha);
+    }
 
 }
