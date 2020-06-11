@@ -41,19 +41,13 @@ public class Restaurante {
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@ConvertGroup(to = CozinhaId.class)
-	@NotBlank
 	@Column(name = "nome", length = 30, nullable = false)
 	private String nome;
 
-	@ConvertGroup(to = CozinhaId.class)
 	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 
-	@Valid
-	@ConvertGroup(to = CozinhaId.class)
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
@@ -75,6 +69,8 @@ public class Restaurante {
 	@UpdateTimestamp
 	@Column(name = "data_atualizacao")
 	private OffsetDateTime dataAtualizacao;
+
+	private Boolean status = Boolean.FALSE;
 
 	@OneToMany(mappedBy = "restaurante")
 	List<Produto> produtos = new ArrayList<>();

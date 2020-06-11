@@ -41,4 +41,10 @@ public class RestauranteService {
             throw new ConstraintEntityViolationException(Restaurante.class, id);
         }
     }
+
+    @Transactional
+    public void changeStatus(Long restauranteId, Boolean status){
+        var restaurante = findById(restauranteId);
+        restaurante.setStatus(status);
+    }
 }

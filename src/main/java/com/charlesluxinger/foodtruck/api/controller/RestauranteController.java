@@ -1,27 +1,21 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
 import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.StatusPayload;
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
-import com.charlesluxinger.foodtruck.api.domain.exception.ValidationException;
 import com.charlesluxinger.foodtruck.api.domain.model.RestauranteModel;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.RestaurantePayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
 import com.charlesluxinger.foodtruck.api.mapper.RestauranteMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,11 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 import static com.charlesluxinger.foodtruck.api.domain.repository.spec.RestauranteFactorySpecs.comFreteGratis;
 import static com.charlesluxinger.foodtruck.api.domain.repository.spec.RestauranteFactorySpecs.porNome;
@@ -75,6 +66,12 @@ public class RestauranteController {
         return restauranteMapper.toModel(saveRestaurante(restauranteFound));
     }
 
+    @PatchMapping(path = "/{id}/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void statusChange(@PathVariable Long id, @Valid @RequestBody StatusPayload statusPayload){
+        restauranteService.changeStatus(id, statusPayload.getStatus());
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
@@ -84,40 +81,6 @@ public class RestauranteController {
     @GetMapping("/comFreteGratis")
     public List<Restaurante> restaurantesComFreteGratis(String nome) {
         return restauranteRepository.findAll(comFreteGratis().and(porNome(nome)));
-    }
-
-    private void validate(Restaurante restaurante, String objectName) {
-        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
-        validator.validate(restaurante, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
-        }
-    }
-
-    private void merge(Map<String, Object> fieldsToUpdate, Restaurante restauranteTarget, HttpServletRequest request) {
-        ServletServerHttpRequest httpRequest = new ServletServerHttpRequest(request);
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-
-            Restaurante restauranteSource = objectMapper.convertValue(fieldsToUpdate, Restaurante.class);
-
-            fieldsToUpdate.forEach((fieldName, fieldValue) -> {
-                Field field = ReflectionUtils.findField(Restaurante.class, fieldName);
-                field.setAccessible(true);
-
-                Object newValue = ReflectionUtils.getField(field, restauranteSource);
-
-                ReflectionUtils.setField(field, restauranteTarget, newValue);
-            });
-
-        } catch (IllegalArgumentException ex) {
-            Throwable cause = ExceptionUtils.getRootCause(ex);
-            throw new HttpMessageNotReadableException(ex.getMessage(), cause, httpRequest);
-        }
     }
 
     private Restaurante saveRestaurante(Restaurante restaurante) {
