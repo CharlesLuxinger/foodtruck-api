@@ -9,5 +9,6 @@ public class CidadeModel {
 
 	private Long id;
 	private String nome;
+	private String estado;
 
 }

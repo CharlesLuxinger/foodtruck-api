@@ -23,19 +23,14 @@ public class Endereco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "endereco_cep")
     private String cep;
 
-    @Column(name = "endereco_logradouro")
     private String logradouro;
 
-    @Column(name = "endereco_numero")
     private String numero;
 
-    @Column(name = "endereco_complemento")
     private String complemento;
 
-    @Column(name = "endereco_bairro")
     private String bairro;
 
     @ManyToOne

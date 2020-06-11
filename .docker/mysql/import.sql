@@ -15,11 +15,11 @@ CREATE TABLE `cidade` (
 
 CREATE TABLE `endereco` (
                             `id` bigint(10) NOT NULL AUTO_INCREMENT,
-                            `endereco_bairro` varchar(100) DEFAULT NULL,
-                            `endereco_cep` varchar(9) DEFAULT NULL,
-                            `endereco_complemento` varchar(20) DEFAULT NULL,
-                            `endereco_logradouro` varchar(100) DEFAULT NULL,
-                            `endereco_numero` varchar(10) DEFAULT NULL,
+                            `bairro` varchar(100) DEFAULT NULL,
+                            `cep` varchar(9) DEFAULT NULL,
+                            `complemento` varchar(20) DEFAULT NULL,
+                            `logradouro` varchar(100) DEFAULT NULL,
+                            `numero` varchar(10) DEFAULT NULL,
                             `endereco_cidade_id` bigint(10) DEFAULT NULL,
                             PRIMARY KEY (`id`),
                             KEY `FKckypcp27tyiumw3tijodfj471` (`endereco_cidade_id`),
@@ -130,7 +130,7 @@ insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 2);
 insert into cidade (id, nome, estado_id) values (4, 'Campinas', 2);
 insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 3);
 
-insert into endereco(id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values (1, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
+insert into endereco(id, endereco_cidade_id, cep, logradouro, numero, bairro) values (1, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
 
 insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, status, endereco_id) values (1, 'Thai Gourmet', 10, 1, utc_timestamp, utc_timestamp, 1, 1);
 insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, status) values (2, 'Thai Delivery', 9.50, 1, utc_timestamp, utc_timestamp, 1);

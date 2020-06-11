@@ -15,11 +15,10 @@ CREATE TABLE `cidade` (
 
 CREATE TABLE `endereco` (
                             `id` bigint(10) NOT NULL AUTO_INCREMENT,
-                            `endereco_bairro` varchar(100) DEFAULT NULL,
-                            `endereco_cep` varchar(9) DEFAULT NULL,
-                            `endereco_complemento` varchar(20) DEFAULT NULL,
-                            `endereco_logradouro` varchar(100) DEFAULT NULL,
-                            `endereco_numero` varchar(10) DEFAULT NULL,
+                            `bairro` varchar(100) DEFAULT NULL,
+                            `cep` varchar(9) DEFAULT NULL,
+                            `complemento` varchar(20) DEFAULT NULL,
+                            `logradouro` varchar(100) DEFAULT NULL,
                             `endereco_cidade_id` bigint(10) DEFAULT NULL,
                             PRIMARY KEY (`id`),
                             KEY `FKckypcp27tyiumw3tijodfj471` (`endereco_cidade_id`),

@@ -31,7 +31,7 @@ public class FormaPagamentoController {
 	private final FormaPagamentoService formaPagamentoService;
 	private final FormaPagamentoMapper formaPagamentoMapper;
 
-	public List<FormaPagamentoModel> listar() {
+	public List<FormaPagamentoModel> findAll() {
 		return formaPagamentoMapper.toCollectionModel(formaPagamentoRepository.findAll());
 	}
 
