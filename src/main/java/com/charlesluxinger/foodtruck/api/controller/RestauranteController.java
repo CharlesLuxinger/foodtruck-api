@@ -1,6 +1,8 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
+import com.charlesluxinger.foodtruck.api.domain.entity.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
+import com.charlesluxinger.foodtruck.api.domain.exception.CidadeNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.StatusPayload;
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
@@ -86,7 +88,7 @@ public class RestauranteController {
     private Restaurante saveRestaurante(Restaurante restaurante) {
         try {
             return restauranteService.save(restaurante);
-        } catch (CozinhaNotFoundException e) {
+        } catch (CozinhaNotFoundException | CidadeNotFoundException e) {
             throw new DomainException(e.getMessage(), e);
         }
     }

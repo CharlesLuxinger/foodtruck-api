@@ -1,6 +1,7 @@
 package com.charlesluxinger.foodtruck.api.mapper;
 
 import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
+import com.charlesluxinger.foodtruck.api.domain.entity.Endereco;
 import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.model.RestauranteModel;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.RestaurantePayload;
@@ -33,6 +34,7 @@ public class RestauranteMapper {
 
 	public void copyToDomainObject(RestaurantePayload restaurantePayload, Restaurante restaurante){
 		restaurante.setCozinha(new Cozinha());
+		restaurante.setEndereco(new Endereco());
 		modelMapper.map(restaurantePayload, restaurante);
 	}
 

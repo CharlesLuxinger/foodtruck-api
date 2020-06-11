@@ -15,8 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class RestauranteService {
 
-    private RestauranteRepository restauranteRepository;
-    private CozinhaService cozinhaService;
+    private final RestauranteRepository restauranteRepository;
+    private final CozinhaService cozinhaService;
+    private final CidadeService cidadeService;
 
     public Restaurante findById(Long id) {
         return  restauranteRepository.findById(id).orElseThrow(() -> new RestauranteNotFoundException(id));
@@ -24,8 +25,12 @@ public class RestauranteService {
 
     @Transactional
     public Restaurante save(Restaurante restaurante){
-        Cozinha cozinha = cozinhaService.findById(restaurante.getCozinha().getId());
+        var cozinha = cozinhaService.findById(restaurante.getCozinha().getId());
+        var cidade = cidadeService.findById(restaurante.getEndereco().getCidade().getId());
+
         restaurante.setCozinha(cozinha);
+        restaurante.getEndereco().setCidade(cidade);
+
         return restauranteRepository.save(restaurante);
     }
 
