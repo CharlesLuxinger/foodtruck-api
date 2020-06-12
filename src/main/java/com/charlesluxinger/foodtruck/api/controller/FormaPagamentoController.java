@@ -1,13 +1,11 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.entity.FormaPagamento;
 import com.charlesluxinger.foodtruck.api.domain.model.FormaPagamentoModel;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.FormaPagamentoPayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.FormaPagamentoRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.FormaPagamentoService;
 import com.charlesluxinger.foodtruck.api.mapper.FormaPagamentoMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

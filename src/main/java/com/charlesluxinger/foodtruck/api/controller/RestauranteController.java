@@ -1,20 +1,18 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.entity.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.exception.CidadeNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.model.payload.StatusPayload;
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.model.RestauranteModel;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.RestaurantePayload;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.StatusPayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
 import com.charlesluxinger.foodtruck.api.mapper.RestauranteMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,10 +35,9 @@ import static com.charlesluxinger.foodtruck.api.domain.repository.spec.Restauran
 @AllArgsConstructor
 public class RestauranteController {
 
-    private RestauranteRepository restauranteRepository;
-    private RestauranteService restauranteService;
-    private SmartValidator validator;
-    private RestauranteMapper restauranteMapper;
+    private final RestauranteRepository restauranteRepository;
+    private final RestauranteService restauranteService;
+    private final RestauranteMapper restauranteMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RestauranteModel> findAll() {

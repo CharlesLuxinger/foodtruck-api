@@ -1,9 +1,8 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
+import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.RestauranteNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
-import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,6 +17,7 @@ public class RestauranteService {
     private final RestauranteRepository restauranteRepository;
     private final CozinhaService cozinhaService;
     private final CidadeService cidadeService;
+    private final FormaPagamentoService formaPagamentoService;
 
     public Restaurante findById(Long id) {
         return  restauranteRepository.findById(id).orElseThrow(() -> new RestauranteNotFoundException(id));
@@ -51,5 +51,21 @@ public class RestauranteService {
     public void changeStatus(Long restauranteId, Boolean status){
         var restaurante = findById(restauranteId);
         restaurante.setStatus(status);
+    }
+
+    @Transactional
+    public void formaPagamentoRemove(Long restauranteId, Long formasPagamentoId) {
+        var restaurante = findById(restauranteId);
+        var formaPagamento = formaPagamentoService.findById(formasPagamentoId);
+
+        restaurante.getFormasPagamento().removeIf(f -> f.equals(formaPagamento));
+    }
+
+    @Transactional
+    public void formaPagamentoAdd(Long restauranteId, Long formaPagamentoId) {
+        var restaurante = findById(restauranteId);
+        var formaPagamento = formaPagamentoService.findById(formaPagamentoId);
+
+        restaurante.getFormasPagamento().add(formaPagamento);
     }
 }
