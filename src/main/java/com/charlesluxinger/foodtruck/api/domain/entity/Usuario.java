@@ -1,6 +1,5 @@
 package com.charlesluxinger.foodtruck.api.domain.entity;
 
-import com.charlesluxinger.foodtruck.api.domain.model.payload.SenhaPayload;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,6 +33,7 @@ public class Usuario {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String senha;
 
     @CreationTimestamp

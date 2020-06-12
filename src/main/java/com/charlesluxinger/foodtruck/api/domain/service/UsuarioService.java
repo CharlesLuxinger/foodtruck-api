@@ -16,7 +16,15 @@ public class UsuarioService {
 
 	@Transactional
 	public Usuario save(Usuario usuario) {
-		return usuarioRepository.save(usuario);
+		usuarioRepository.detach(usuario);
+
+		var usuarioFound = usuarioRepository.findByEmail(usuario.getEmail());
+
+		if (usuarioFound.isEmpty() || usuarioFound.get().equals(usuario)) {
+			return usuarioRepository.save(usuario);
+		} else {
+			throw new DomainException("Já existe um usuário com o email: " + usuario.getEmail());
+		}
 	}
 
 	@Transactional

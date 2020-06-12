@@ -100,7 +100,7 @@ CREATE TABLE `usuario` (
                            `id` bigint(10) NOT NULL AUTO_INCREMENT,
                            `data_atualizacao` datetime NOT NULL,
                            `data_cadastro` datetime NOT NULL,
-                           `email` varchar(20) NOT NULL,
+                           `email` varchar(100) NOT NULL,
                            `nome` varchar(60) NOT NULL,
                            `senha` varchar(60) NOT NULL,
                            PRIMARY KEY (`id`)
