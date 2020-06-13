@@ -18,6 +18,7 @@ public class RestauranteService {
     private final CozinhaService cozinhaService;
     private final CidadeService cidadeService;
     private final FormaPagamentoService formaPagamentoService;
+    private final UsuarioService usuarioService;
 
     public Restaurante findById(Long id) {
         return  restauranteRepository.findById(id).orElseThrow(() -> new RestauranteNotFoundException(id));
@@ -77,6 +78,22 @@ public class RestauranteService {
     @Transactional
     public void fechar(Long restauranteId) {
         findById(restauranteId).fechar();
+    }
+
+    @Transactional
+    public void removeResponsavel(Long restauranteId, Long usuarioId) {
+        var restaurante = findById(restauranteId);
+        var usuario = usuarioService.findById(usuarioId);
+
+        restaurante.removeResponsavel(usuario);
+    }
+
+    @Transactional
+    public void addResponsavel(Long restauranteId, Long usuarioId) {
+        var restaurante = findById(restauranteId);
+        var usuario = usuarioService.findById(usuarioId);
+
+        restaurante.addResponsavel(usuario);
     }
 
 }

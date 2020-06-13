@@ -117,6 +117,16 @@ CREATE TABLE `usuario_grupo` (
                                  CONSTRAINT `FKk30suuy31cq5u36m9am4om9ju` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
 
+CREATE TABLE restaurante_usuario_responsavel (
+                        restaurante_id bigint NOT NULL,
+                        usuario_id bigint NOT NULL,
+                        PRIMARY KEY (restaurante_id, usuario_id)
+                        KEY `key_restaurante_id` (`restaurante_id`),
+                        KEY `key_usuario_id` (`usuario_id`),
+                        CONSTRAINT `fk_usuario_id_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`),
+                        CONSTRAINT `fk_grupo_id_grupo` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
+
 insert into cozinha (id, nome) values (1, 'Tailandesa');
 insert into cozinha (id, nome) values (2, 'Indiana');
 insert into cozinha (id, nome) values (3, 'Argentina');
@@ -171,3 +181,6 @@ insert into usuario (id, nome, email, senha, data_cadastro, data_atualizacao) va
 (2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', utc_timestamp, utc_timestamp),
 (3, 'José Souza', 'jose.aux@algafood.com', '123', utc_timestamp, utc_timestamp),
 (4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', utc_timestamp, utc_timestamp);
+(5, 'Manoel Lima', 'manoel.loja@gmail.com', '123', utc_timestamp, utc_timestamp);
+
+insert into restaurante_usuario_responsavel (restaurante_id, usuario_id) values (1, 5), (3, 5);

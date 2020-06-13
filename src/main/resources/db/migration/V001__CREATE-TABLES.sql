@@ -116,7 +116,7 @@ CREATE TABLE `usuario_grupo` (
                                  CONSTRAINT `FKk30suuy31cq5u36m9am4om9ju` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
 
-create table pedido (
+CREATE TABLE pedido (
                         `id` bigint(10) NOT NULL AUTO_INCREMENT,
                         `subtotal` decimal(10,2) NOT NULL,
                         `taxa_frete` decimal(5,2) NOT NULL,
@@ -136,7 +136,7 @@ create table pedido (
                         CONSTRAINT `fk_pedido_forma_pagamento` FOREIGN KEY (`forma_pagamento_id`) REFERENCES `forma_pagamento` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
 
-create table item_pedido (
+CREATE TABLE item_pedido (
                              `id` bigint NOT NULL auto_increment,
                              `quantidade` smallint(6) NOT NULL,
                              `preco_unitario` decimal(10,2) NOT NULL,
@@ -148,4 +148,14 @@ create table item_pedido (
                              unique KEY `uk_item_pedido_produto` (`pedido_id`, `produto_id`),
                              CONSTRAINT `fk_item_pedido_pedido` FOREIGN KEY (`pedido_id`) REFERENCES pedido (`id`),
                              CONSTRAINT `fk_item_pedido_produto` FOREIGN KEY (`produto_id`) REFERENCES produto (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
+
+CREATE TABLE restaurante_usuario_responsavel (
+                        restaurante_id bigint NOT NULL,
+                        usuario_id bigint NOT NULL,
+                        PRIMARY KEY (restaurante_id, usuario_id)
+                        KEY `key_restaurante_id` (`restaurante_id`),
+                        KEY `key_usuario_id` (`usuario_id`),
+                        CONSTRAINT `fk_usuario_id_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`),
+                        CONSTRAINT `fk_grupo_id_grupo` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
