@@ -96,4 +96,8 @@ public class Restaurante {
 		return getResponsaveis().add(usuario);
 	}
 
+	public boolean formaPagamentoValida(FormaPagamento formaPagamento) {
+		return getFormasPagamento().contains(formaPagamento);
+	}
+
 }

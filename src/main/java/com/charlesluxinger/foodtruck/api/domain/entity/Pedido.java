@@ -74,5 +74,22 @@ public class Pedido {
     private FormaPagamento formaPagamento;
 
     @Embedded
-    private StatusPedido status;
+    private StatusPedido status = StatusPedido.CRIADO;
+
+    public void getValorTotal() {
+        this.subTotal = getItensPedidos().stream()
+                .map(item -> item.getPrecoTotal())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        this.valorTotal = this.subTotal.add(this.taxaFrete);
+    }
+
+    public void definirFrete() {
+        setTaxaFrete(getRestaurante().getTaxaFrete());
+    }
+
+    public void atribuirPedidoAosItens() {
+        getItensPedidos().forEach(item -> item.setPedido(this));
+    }
+
 }
