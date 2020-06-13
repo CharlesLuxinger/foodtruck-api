@@ -89,4 +89,17 @@ public class RestauranteController {
             throw new DomainException(e.getMessage(), e);
         }
     }
+
+    @PutMapping("/{restauranteId}/abertura")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void open(@PathVariable Long restauranteId) {
+        restauranteService.abrir(restauranteId);
+    }
+
+    @PutMapping("/{restauranteId}/fechamento")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void close(@PathVariable Long restauranteId) {
+        restauranteService.fechar(restauranteId);
+    }
+    
 }

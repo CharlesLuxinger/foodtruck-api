@@ -50,7 +50,7 @@ public class RestauranteService {
     @Transactional
     public void changeStatus(Long restauranteId, Boolean status){
         var restaurante = findById(restauranteId);
-        restaurante.setStatus(status);
+        restaurante.setAtivo(status);
     }
 
     @Transactional
@@ -68,4 +68,15 @@ public class RestauranteService {
 
         restaurante.getFormasPagamento().add(formaPagamento);
     }
+
+    @Transactional
+    public void abrir(Long restauranteId) {
+        findById(restauranteId).abrir();
+    }
+
+    @Transactional
+    public void fechar(Long restauranteId) {
+        findById(restauranteId).fechar();
+    }
+
 }

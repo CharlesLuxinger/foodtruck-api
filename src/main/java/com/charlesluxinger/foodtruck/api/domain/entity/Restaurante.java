@@ -67,9 +67,19 @@ public class Restaurante {
 	@Column(name = "data_atualizacao")
 	private OffsetDateTime dataAtualizacao;
 
-	private Boolean status = Boolean.FALSE;
+	private Boolean ativo = Boolean.FALSE;
+
+	private Boolean aberto = Boolean.FALSE;
 
 	@OneToMany(mappedBy = "restaurante")
 	List<Produto> produtos = new ArrayList<>();
+
+	public void abrir() {
+		setAberto(true);
+	}
+
+	public void fechar() {
+		setAberto(false);
+	}
 
 }
