@@ -2,13 +2,17 @@ package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.entity.Restaurante;
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
+import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.exception.RestauranteNotFoundException;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.RestauranteAtivoPayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -52,6 +56,15 @@ public class RestauranteService {
     public void changeStatus(Long restauranteId, Boolean status){
         var restaurante = findById(restauranteId);
         restaurante.setAtivo(status);
+    }
+
+    @Transactional
+    public void changeStatus(List<RestauranteAtivoPayload> restaurantes){
+        try {
+            restaurantes.forEach(r -> changeStatus(r.getRestauranteId(), r.getStatus()));
+        } catch (RestauranteNotFoundException ex){
+            throw new DomainException(ex.getMessage(), ex.getCause());
+        }
     }
 
     @Transactional

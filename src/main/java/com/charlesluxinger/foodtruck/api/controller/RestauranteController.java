@@ -5,8 +5,9 @@ import com.charlesluxinger.foodtruck.api.domain.exception.CidadeNotFoundExceptio
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.model.RestauranteModel;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.RestauranteAtivoPayload;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.RestaurantePayload;
-import com.charlesluxinger.foodtruck.api.domain.model.payload.StatusPayload;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.AtivoPayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
 import com.charlesluxinger.foodtruck.api.mapper.RestauranteMapper;
@@ -65,10 +66,16 @@ public class RestauranteController {
         return restauranteMapper.toModel(saveRestaurante(restauranteFound));
     }
 
-    @PatchMapping(path = "/{id}/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/{id}/ativo", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void statusChange(@PathVariable Long id, @Valid @RequestBody StatusPayload statusPayload){
-        restauranteService.changeStatus(id, statusPayload.getStatus());
+    public void statusChange(@PathVariable Long id, @Valid @RequestBody AtivoPayload ativoPayload){
+        restauranteService.changeStatus(id, ativoPayload.getAtivo());
+    }
+
+    @PatchMapping(path = "/ativos", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void manyStatusChange(@Valid @RequestBody List<RestauranteAtivoPayload> restaurantes){
+        restauranteService.changeStatus(restaurantes);
     }
 
     @DeleteMapping("/{id}")

@@ -7,8 +7,10 @@ import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
-public class StatusPayload {
+public class RestauranteAtivoPayload {
 
+	@NotNull
+	private Long restauranteId;
 	@NotNull
 	private Boolean status;
 
