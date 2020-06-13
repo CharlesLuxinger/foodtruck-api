@@ -45,6 +45,8 @@ insert into grupo (id, nome) values (1, 'Gerente'), (2, 'Vendedor'), (3, 'Secret
 
 insert into grupo_permissao (grupo_id, permissao_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
 
+insert into usuario_grupo (usuario_id, grupo_id) values (1, 1), (1, 2), (2, 2);
+
 insert into usuario (id, nome, email, senha, data_cadastro, data_atualizacao) values
 (1, 'João da Silva', 'joao.ger@algafood.com', '123', utc_timestamp, utc_timestamp),
 (2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', utc_timestamp, utc_timestamp),

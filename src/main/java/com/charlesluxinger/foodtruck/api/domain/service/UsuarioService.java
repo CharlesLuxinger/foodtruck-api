@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
+	private final GrupoService grupoService;
 
 	@Transactional
 	public Usuario save(Usuario usuario) {
@@ -42,4 +43,21 @@ public class UsuarioService {
 		return usuarioRepository.findById(usuarioId)
 				.orElseThrow(() -> new UsuarioNotFoundException(usuarioId));
 	}
+
+	@Transactional
+	public void removeGrupo(Long usuarioId, Long grupoId) {
+		var usuario = findById(usuarioId);
+		var grupo = grupoService.findById(grupoId);
+
+		usuario.removeGrupo(grupo);
+	}
+
+	@Transactional
+	public void addGrupo(Long usuarioId, Long grupoId) {
+		var usuario = findById(usuarioId);
+		var grupo = grupoService.findById(grupoId);
+
+		usuario.addGrupo(grupo);
+	}
+
 }
