@@ -3,7 +3,6 @@ package com.charlesluxinger.foodtruck.api.config;
 import com.charlesluxinger.foodtruck.api.domain.entity.Endereco;
 import com.charlesluxinger.foodtruck.api.domain.model.EnderecoModel;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

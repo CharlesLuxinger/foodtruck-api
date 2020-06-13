@@ -101,5 +101,5 @@ public class RestauranteController {
     public void close(@PathVariable Long restauranteId) {
         restauranteService.fechar(restauranteId);
     }
-    
+
 }

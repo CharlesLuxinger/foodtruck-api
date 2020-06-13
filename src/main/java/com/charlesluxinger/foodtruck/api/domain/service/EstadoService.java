@@ -1,8 +1,8 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
+import com.charlesluxinger.foodtruck.api.domain.entity.Estado;
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.EstadoNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.entity.Estado;
 import com.charlesluxinger.foodtruck.api.domain.repository.EstadoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class EstadoService {
 
-    private EstadoRepository estadoRepository;
+    private final EstadoRepository estadoRepository;
 
     public Estado findById(Long id) {
         return  estadoRepository.findById(id).orElseThrow(() -> new EstadoNotFoundException(id));

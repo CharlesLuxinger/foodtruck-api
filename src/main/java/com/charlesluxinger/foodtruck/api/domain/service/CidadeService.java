@@ -1,9 +1,9 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
-import com.charlesluxinger.foodtruck.api.domain.exception.CidadeNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.entity.Cidade;
 import com.charlesluxinger.foodtruck.api.domain.entity.Estado;
+import com.charlesluxinger.foodtruck.api.domain.exception.CidadeNotFoundException;
+import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.repository.CidadeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class CidadeService {
 
-    private CidadeRepository cidadeRepository;
-    private EstadoService estadoService;
+    private final CidadeRepository cidadeRepository;
+    private final EstadoService estadoService;
 
     public Cidade findById(Long id) {
         return cidadeRepository.findById(id).orElseThrow(() -> new CidadeNotFoundException(id));

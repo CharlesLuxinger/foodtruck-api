@@ -1,8 +1,8 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
+import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.exception.ConstraintEntityViolationException;
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
-import com.charlesluxinger.foodtruck.api.domain.entity.Cozinha;
 import com.charlesluxinger.foodtruck.api.domain.repository.CozinhaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class CozinhaService {
 
-    private CozinhaRepository cozinhaRepository;
+    private final CozinhaRepository cozinhaRepository;
 
     @Transactional
     public Cozinha save(Cozinha cozinha) {

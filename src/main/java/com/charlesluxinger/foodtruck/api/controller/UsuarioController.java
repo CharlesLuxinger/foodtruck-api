@@ -1,6 +1,5 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
-import com.charlesluxinger.foodtruck.api.domain.entity.Usuario;
 import com.charlesluxinger.foodtruck.api.domain.model.UsuarioModel;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.SenhaPayload;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.UsuarioPayload;
@@ -28,8 +27,8 @@ import java.util.List;
 public class UsuarioController {
 
 	private final UsuarioRepository usuarioRepository;
-	private UsuarioService usuarioService;
-	private UsuarioMapper usuarioMapper;
+	private final UsuarioService usuarioService;
+	private final UsuarioMapper usuarioMapper;
 
 	@GetMapping
 	public List<UsuarioModel> findAll() {

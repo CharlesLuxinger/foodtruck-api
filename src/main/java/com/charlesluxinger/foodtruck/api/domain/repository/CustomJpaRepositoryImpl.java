@@ -10,8 +10,6 @@ public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>  
 
     private EntityManager manager;
 
-
-
     public CustomJpaRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
         this.manager = entityManager;

@@ -6,6 +6,7 @@ import com.charlesluxinger.foodtruck.api.domain.model.payload.GrupoPayload;
 import com.charlesluxinger.foodtruck.api.domain.repository.GrupoRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.GrupoService;
 import com.charlesluxinger.foodtruck.api.mapper.GrupoMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +23,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/grupos")
+@AllArgsConstructor
 public class GrupoController {
 
-	private GrupoRepository grupoRepository;
-	private GrupoService grupoService;
-	private GrupoMapper grupoMapper;
+	private final GrupoRepository grupoRepository;
+	private final GrupoService grupoService;
+	private final GrupoMapper grupoMapper;
 
 	@GetMapping
 	public List<GrupoModel> findAll() {
