@@ -1,9 +1,11 @@
 package com.charlesluxinger.foodtruck.api.controller;
 
 import com.charlesluxinger.foodtruck.api.domain.model.PedidoModel;
+import com.charlesluxinger.foodtruck.api.domain.model.PedidoResumoModel;
 import com.charlesluxinger.foodtruck.api.domain.repository.PedidoRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.PedidoService;
 import com.charlesluxinger.foodtruck.api.mapper.PedidoMapper;
+import com.charlesluxinger.foodtruck.api.mapper.PedidoResumoMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,12 +22,12 @@ public class PedidoController {
 	private final PedidoRepository pedidoRepository;
 	private final PedidoService pedidoService;
 	private final PedidoMapper pedidoMapper;
+	private final PedidoResumoMapper pedidoResumoMapper;
 
 	@GetMapping
-	public List<PedidoModel> findAll() {
+	public List<PedidoResumoModel> findAll() {
 		var pedidos = pedidoRepository.findAll();
-
-		return pedidoMapper.toCollectionModel(pedidos);
+		return pedidoResumoMapper.toCollectionModel(pedidos);
 	}
 
 	@GetMapping("/{pedidoId}")

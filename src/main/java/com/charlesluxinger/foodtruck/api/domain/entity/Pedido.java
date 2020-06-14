@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -63,13 +64,13 @@ public class Pedido {
     private Usuario cliente;
 
     @OneToMany(mappedBy = "pedido")
-    List<ItemPedido> itensPedidos = new ArrayList<>();
+    private List<ItemPedido> itens = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private FormaPagamento formaPagamento;
 
@@ -77,7 +78,7 @@ public class Pedido {
     private StatusPedido status = StatusPedido.CRIADO;
 
     public void getValorTotal() {
-        this.subTotal = getItensPedidos().stream()
+        this.subTotal = getItens().stream()
                 .map(item -> item.getPrecoTotal())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -89,7 +90,7 @@ public class Pedido {
     }
 
     public void atribuirPedidoAosItens() {
-        getItensPedidos().forEach(item -> item.setPedido(this));
+        getItens().forEach(item -> item.setPedido(this));
     }
 
 }
