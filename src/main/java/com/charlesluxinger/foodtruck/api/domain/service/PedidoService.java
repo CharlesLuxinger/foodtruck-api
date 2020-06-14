@@ -49,6 +49,36 @@ public class PedidoService {
 		pedido.setDataConfirmacao(OffsetDateTime.now());
 	}
 
+	@Transactional
+	public void cancelar(Long pedidoId) {
+		Pedido pedido = findById(pedidoId);
+
+		if (!pedido.getStatus().equals(StatusPedido.CRIADO)) {
+			throw new DomainException(
+					String.format("Status do pedido %d não pode ser alterado de %s para %s",
+							pedido.getId(), pedido.getStatus().getDescricao(),
+							StatusPedido.CANCELADO.getDescricao()));
+		}
+
+		pedido.setStatus(StatusPedido.CANCELADO);
+		pedido.setDataCancelamento(OffsetDateTime.now());
+	}
+
+	@Transactional
+	public void entregar(Long pedidoId) {
+		Pedido pedido = findById(pedidoId);
+
+		if (!pedido.getStatus().equals(StatusPedido.CONFIRMADO)) {
+			throw new DomainException(
+					String.format("Status do pedido %d não pode ser alterado de %s para %s",
+							pedido.getId(), pedido.getStatus().getDescricao(),
+							StatusPedido.ENTREGUE.getDescricao()));
+		}
+
+		pedido.setStatus(StatusPedido.ENTREGUE);
+		pedido.setDataEntrega(OffsetDateTime.now());
+	}
+
 	private void validarPedido(Pedido pedido) {
 		var cidade = cidadeService.findById(pedido.getEndereco().getCidade().getId());
 		var cliente = usuarioService.findById(pedido.getCliente().getId());
