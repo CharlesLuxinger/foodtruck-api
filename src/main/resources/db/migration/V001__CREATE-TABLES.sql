@@ -17,6 +17,7 @@ CREATE TABLE `endereco` (
                             `id` bigint(10) NOT NULL AUTO_INCREMENT,
                             `bairro` varchar(100) DEFAULT NULL,
                             `cep` varchar(9) DEFAULT NULL,
+                            `numero` varchar(10) DEFAULT NULL,
                             `complemento` varchar(20) DEFAULT NULL,
                             `logradouro` varchar(100) DEFAULT NULL,
                             `endereco_cidade_id` bigint(10) DEFAULT NULL,
@@ -118,6 +119,7 @@ CREATE TABLE `usuario_grupo` (
 
 CREATE TABLE pedido (
                         `id` bigint(10) NOT NULL AUTO_INCREMENT,
+                        `codigo` varchar(36) NOT NULL,
                         `subtotal` decimal(10,2) NOT NULL,
                         `taxa_frete` decimal(5,2) NOT NULL,
                         `valor_total` decimal(10,2) NOT NULL,
@@ -133,7 +135,8 @@ CREATE TABLE pedido (
                         PRIMARY KEY (id),
                         CONSTRAINT `fk_pedido_restaurante` FOREIGN KEY (`restaurante_id`) REFERENCES `restaurante` (`id`),
                         CONSTRAINT `fk_pedido_usuario_cliente` FOREIGN KEY (`usuario_cliente_id`) REFERENCES `usuario` (`id`),
-                        CONSTRAINT `fk_pedido_forma_pagamento` FOREIGN KEY (`forma_pagamento_id`) REFERENCES `forma_pagamento` (`id`)
+                        CONSTRAINT `fk_pedido_forma_pagamento` FOREIGN KEY (`forma_pagamento_id`) REFERENCES `forma_pagamento` (`id`),
+                        CONSTRAINT `uk_pedido_codigo` UNIQUE (`codigo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE item_pedido (
@@ -153,9 +156,9 @@ CREATE TABLE item_pedido (
 CREATE TABLE restaurante_usuario_responsavel (
                         restaurante_id bigint NOT NULL,
                         usuario_id bigint NOT NULL,
-                        PRIMARY KEY (restaurante_id, usuario_id)
+                        PRIMARY KEY (restaurante_id, usuario_id),
                         KEY `key_restaurante_id` (`restaurante_id`),
                         KEY `key_usuario_id` (`usuario_id`),
                         CONSTRAINT `fk_usuario_id_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`),
-                        CONSTRAINT `fk_grupo_id_grupo` FOREIGN KEY (`grupo_id`) REFERENCES `grupo` (`id`)
+                        CONSTRAINT `fk_restaurante_id_restaurante` FOREIGN KEY (`restaurante_id`) REFERENCES `restaurante` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=UTF8MB4;

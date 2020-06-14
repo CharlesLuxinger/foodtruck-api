@@ -2,14 +2,12 @@ package com.charlesluxinger.foodtruck.api.domain.entity;
 
 import lombok.Getter;
 
-import javax.persistence.Embeddable;
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
-@Embeddable
 public enum StatusPedido {
-    CRIADO("Criado", null),
+    CRIADO("Criado"),
     CONFIRMADO("Confirmado", CRIADO),
     ENTREGUE("Entregue", CONFIRMADO),
     CANCELADO("Confirmado", CRIADO);

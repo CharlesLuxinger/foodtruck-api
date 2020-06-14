@@ -1,7 +1,7 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.entity.Permissao;
-import com.charlesluxinger.foodtruck.api.domain.exception.ProdutoNotFoundException;
+import com.charlesluxinger.foodtruck.api.domain.exception.PermissaoNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.repository.PermissaoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class PermissaoService {
 
 	public Permissao findById(Long permissaoId) {
 		return permissaoRepository.findById(permissaoId)
-				.orElseThrow(() -> new ProdutoNotFoundException(permissaoId));
+				.orElseThrow(() -> new PermissaoNotFoundException(permissaoId));
 	}
 
 }

@@ -8,8 +8,9 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,10 +19,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -33,6 +36,8 @@ public class Pedido {
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    private String codigo;
 
     @JsonProperty(value = "sub_total")
     private BigDecimal subTotal;
@@ -75,19 +80,19 @@ public class Pedido {
     @JoinColumn(nullable = false)
     private FormaPagamento formaPagamento;
 
-    @Embedded
+    @Enumerated(EnumType.STRING)
     private StatusPedido status = StatusPedido.CRIADO;
 
     private void setStatus(StatusPedido novoStatus){
         if(getStatus().naoPodeMudarStatusPara(novoStatus)){
             throw new DomainException(
-                    String.format("Status do pedido %d não pode ser alterado de %s para %s", getId(), getStatus().getDescricao(), novoStatus.getDescricao()));
+                    String.format("Status do pedido %d não pode ser alterado de %s para %s", getCodigo(), getStatus().getDescricao(), novoStatus.getDescricao()));
         }
 
         this.status = novoStatus;
     }
 
-    public void getValorTotal() {
+    public BigDecimal getValorTotal() {
         getItens().forEach(ItemPedido::calcularPrecoTotal);
 
         this.subTotal = getItens().stream()
@@ -95,6 +100,8 @@ public class Pedido {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.valorTotal = this.subTotal.add(this.taxaFrete);
+
+        return valorTotal;
     }
 
     public void definirFrete() {
@@ -118,6 +125,11 @@ public class Pedido {
     public void cancelar(){
         setStatus(StatusPedido.CANCELADO);
         setDataCancelamento(OffsetDateTime.now());
+    }
+
+    @PrePersist
+    private void gerarCodigo(){
+        setCodigo(UUID.randomUUID().toString());
     }
 
 }

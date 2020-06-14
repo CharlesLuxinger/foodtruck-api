@@ -19,8 +19,8 @@ public class PedidoService {
 	private final ProdutoService produtoService;
 	private final FormaPagamentoService formaPagamentoService;
 
-	public Pedido findById(Long pedidoId) {
-		return pedidoRepository.findById(pedidoId).orElseThrow(() -> new PedidoNotFoundException(pedidoId));
+	public Pedido findByCodigo(String codigo) {
+		return pedidoRepository.findByCodigo(codigo).orElseThrow(() -> new PedidoNotFoundException(codigo));
 	}
 
 	@Transactional
@@ -35,18 +35,18 @@ public class PedidoService {
 	}
 
 	@Transactional
-	public void confirmar(Long pedidoId){
-		findById(pedidoId).confirmar();
+	public void confirmar(String codigo){
+		findByCodigo(codigo).confirmar();
 	}
 
 	@Transactional
-	public void cancelar(Long pedidoId) {
-		findById(pedidoId).cancelar();
+	public void cancelar(String codigo) {
+		findByCodigo(codigo).cancelar();
 	}
 
 	@Transactional
-	public void entregar(Long pedidoId) {
-		findById(pedidoId).entregar();
+	public void entregar(String codigo) {
+		findByCodigo(codigo).entregar();
 	}
 
 	private void validarPedido(Pedido pedido) {

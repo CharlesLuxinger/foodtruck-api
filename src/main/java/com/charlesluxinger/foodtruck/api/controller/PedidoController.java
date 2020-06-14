@@ -40,9 +40,9 @@ public class PedidoController {
 		return pedidoResumoMapper.toCollectionModel(pedidos);
 	}
 
-	@GetMapping("/{pedidoId}")
-	public PedidoModel findById(@PathVariable Long pedidoId) {
-		var pedido = pedidoService.findById(pedidoId);
+	@GetMapping("/{codigo}")
+	public PedidoModel findById(@PathVariable String codigo) {
+		var pedido = pedidoService.findByCodigo(codigo);
 		return pedidoMapper.toModel(pedido);
 	}
 
@@ -64,22 +64,22 @@ public class PedidoController {
 		}
 	}
 
-	@PutMapping("/{pedidoId}/confirmacao")
+	@PutMapping("/{codigo}/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void confirmar(@PathVariable Long pedidoId) {
-		pedidoService.confirmar(pedidoId);
+	public void confirmar(@PathVariable String codigo) {
+		pedidoService.confirmar(codigo);
 	}
 
-	@PutMapping("/{pedidoId}/cancelamento")
+	@PutMapping("/{codigo}/cancelamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void cancelar(@PathVariable Long pedidoId) {
-		pedidoService.cancelar(pedidoId);
+	public void cancelar(@PathVariable String codigo) {
+		pedidoService.cancelar(codigo);
 	}
 
-	@PutMapping("/{pedidoId}/entrega")
+	@PutMapping("/{codigo}/entrega")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void entregar(@PathVariable Long pedidoId) {
-		pedidoService.entregar(pedidoId);
+	public void entregar(@PathVariable String codigo) {
+		pedidoService.entregar(codigo);
 	}
 
 }
