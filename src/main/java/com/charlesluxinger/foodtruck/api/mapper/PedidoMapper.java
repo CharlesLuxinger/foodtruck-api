@@ -2,6 +2,7 @@ package com.charlesluxinger.foodtruck.api.mapper;
 
 import com.charlesluxinger.foodtruck.api.domain.entity.Pedido;
 import com.charlesluxinger.foodtruck.api.domain.model.PedidoModel;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.PedidoPayload;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,14 @@ public class PedidoMapper {
 		return pedidos.stream()
 				.map(pedido -> toModel(pedido))
 				.collect(Collectors.toList());
+	}
+
+	public Pedido toDomainObject(PedidoPayload pedidoPayload) {
+		return modelMapper.map(pedidoPayload, Pedido.class);
+	}
+
+	public void copyToDomainObject(PedidoPayload pedidoPayload, Pedido pedido) {
+		modelMapper.map(pedidoPayload, pedido);
 	}
 
 }

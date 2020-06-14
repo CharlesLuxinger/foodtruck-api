@@ -63,7 +63,7 @@ public class Pedido {
     @JoinColumn(name = "usuario_cliente_id", nullable = false)
     private Usuario cliente;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -78,6 +78,8 @@ public class Pedido {
     private StatusPedido status = StatusPedido.CRIADO;
 
     public void getValorTotal() {
+        getItens().forEach(ItemPedido::calcularPrecoTotal);
+
         this.subTotal = getItens().stream()
                 .map(item -> item.getPrecoTotal())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
