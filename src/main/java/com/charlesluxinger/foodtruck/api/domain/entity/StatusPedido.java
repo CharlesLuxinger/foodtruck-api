@@ -1,20 +1,29 @@
 package com.charlesluxinger.foodtruck.api.domain.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.persistence.Embeddable;
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Embeddable
-@AllArgsConstructor
 public enum StatusPedido {
+    CRIADO("Criado", null),
+    CONFIRMADO("Confirmado", CRIADO),
+    ENTREGUE("Entregue", CONFIRMADO),
+    CANCELADO("Confirmado", CRIADO);
 
-    CRIADO("Criado"),
-    CONFIRMADO("Confirmado"),
-    ENTREGUE("Entregue"),
-    CANCELADO("Confirmado");
+    StatusPedido(String descricao, StatusPedido... statusAnterior) {
+        this.descricao = descricao;
+        this.statusAnterior = Arrays.asList((statusAnterior));
+    }
 
     private String descricao;
+    private List<StatusPedido> statusAnterior;
+
+    public boolean naoPodeMudarStatusPara(StatusPedido novoStatus){
+        return !novoStatus.statusAnterior.contains(this);
+    }
 
 }

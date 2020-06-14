@@ -1,5 +1,6 @@
 package com.charlesluxinger.foodtruck.api.domain.entity;
 
+import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -77,6 +78,15 @@ public class Pedido {
     @Embedded
     private StatusPedido status = StatusPedido.CRIADO;
 
+    private void setStatus(StatusPedido novoStatus){
+        if(getStatus().naoPodeMudarStatusPara(novoStatus)){
+            throw new DomainException(
+                    String.format("Status do pedido %d não pode ser alterado de %s para %s", getId(), getStatus().getDescricao(), novoStatus.getDescricao()));
+        }
+
+        this.status = novoStatus;
+    }
+
     public void getValorTotal() {
         getItens().forEach(ItemPedido::calcularPrecoTotal);
 
@@ -93,6 +103,21 @@ public class Pedido {
 
     public void atribuirPedidoAosItens() {
         getItens().forEach(item -> item.setPedido(this));
+    }
+
+    public void confirmar(){
+        setStatus(StatusPedido.CONFIRMADO);
+        setDataConfirmacao(OffsetDateTime.now());
+    }
+
+    public void entregar(){
+        setStatus(StatusPedido.ENTREGUE);
+        setDataEntrega(OffsetDateTime.now());
+    }
+
+    public void cancelar(){
+        setStatus(StatusPedido.CANCELADO);
+        setDataCancelamento(OffsetDateTime.now());
     }
 
 }

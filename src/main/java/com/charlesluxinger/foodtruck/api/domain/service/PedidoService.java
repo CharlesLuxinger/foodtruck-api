@@ -1,15 +1,12 @@
 package com.charlesluxinger.foodtruck.api.domain.service;
 
 import com.charlesluxinger.foodtruck.api.domain.entity.Pedido;
-import com.charlesluxinger.foodtruck.api.domain.entity.StatusPedido;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.exception.PedidoNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.repository.PedidoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
 
 @Service
 @AllArgsConstructor
@@ -39,44 +36,17 @@ public class PedidoService {
 
 	@Transactional
 	public void confirmar(Long pedidoId){
-		var pedido = findById(pedidoId);
-
-		if (!pedido.getStatus().equals(StatusPedido.CRIADO)) {
-			throw new DomainException(String.format("Status do pedido %d não pode ser alterado de %s para %s", pedido.getId(), pedido.getStatus(), StatusPedido.CONFIRMADO.getDescricao()));
-		}
-
-		pedido.setStatus(StatusPedido.CONFIRMADO);
-		pedido.setDataConfirmacao(OffsetDateTime.now());
+		findById(pedidoId).confirmar();
 	}
 
 	@Transactional
 	public void cancelar(Long pedidoId) {
-		Pedido pedido = findById(pedidoId);
-
-		if (!pedido.getStatus().equals(StatusPedido.CRIADO)) {
-			throw new DomainException(
-					String.format("Status do pedido %d não pode ser alterado de %s para %s",
-							pedido.getId(), pedido.getStatus().getDescricao(),
-							StatusPedido.CANCELADO.getDescricao()));
-		}
-
-		pedido.setStatus(StatusPedido.CANCELADO);
-		pedido.setDataCancelamento(OffsetDateTime.now());
+		findById(pedidoId).cancelar();
 	}
 
 	@Transactional
 	public void entregar(Long pedidoId) {
-		Pedido pedido = findById(pedidoId);
-
-		if (!pedido.getStatus().equals(StatusPedido.CONFIRMADO)) {
-			throw new DomainException(
-					String.format("Status do pedido %d não pode ser alterado de %s para %s",
-							pedido.getId(), pedido.getStatus().getDescricao(),
-							StatusPedido.ENTREGUE.getDescricao()));
-		}
-
-		pedido.setStatus(StatusPedido.ENTREGUE);
-		pedido.setDataEntrega(OffsetDateTime.now());
+		findById(pedidoId).entregar();
 	}
 
 	private void validarPedido(Pedido pedido) {
