@@ -181,15 +181,21 @@ insert into cidade (id, nome, estado_id) values
 (4, 'Campinas', 2),
 (5, 'Fortaleza', 3);
 
-insert into endereco(id, endereco_cidade_id, cep, logradouro, numero, bairro) values (1, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
+insert into endereco(id, endereco_cidade_id, cep, logradouro, numero, bairro) values
+(1, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro'),
+(2, 2, '29164-999', 'Av Maria Pinheiro', '22', 'Guarapari'),
+(3, 3, '29055-999', 'Rua Manuela Pinheiro', '33', 'Vila Velha'),
+(4, 4, '24001-999', 'Av Thiago Pinheiro', '55', 'São Jão'),
+(5, 5, '21456-999', 'Rua Padre Pinheiro', '11', 'Serra'),
+(6, 1, '21000-999', 'Av Marechal Pinheiro', '11', 'Vitória');
 
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, aberto, endereco_id) values (1, 'Thai Gourmet', 10, 1, utc_timestamp, utc_timestamp, 1, 1, 1);
-insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, aberto) values
-(2, 'Thai Delivery', 9.50, 1, utc_timestamp, utc_timestamp, 1, 1),
-(3, 'Tuk Tuk Comida Indiana', 15, 2, utc_timestamp, utc_timestamp, 1, 1),
-(4, 'Java Steakhouse', 12, 3, utc_timestamp, utc_timestamp, 1, 1),
-(5, 'Lanchonete do Tio Sam', 11, 4, utc_timestamp, utc_timestamp, 1, 1),
-(6, 'Bar da Maria', 6, 4, utc_timestamp, utc_timestamp, 1, 1);
+insert into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, aberto, endereco_id) values
+(1, 'Thai Gourmet', 10, 1, utc_timestamp, utc_timestamp, 1, 1, 1),
+(2, 'Thai Delivery', 9.50, 1, utc_timestamp, utc_timestamp, 1, 1, 2),
+(3, 'Tuk Tuk Comida Indiana', 15, 2, utc_timestamp, utc_timestamp, 1, 1, 3),
+(4, 'Java Steakhouse', 12, 3, utc_timestamp, utc_timestamp, 1, 1, 4),
+(5, 'Lanchonete do Tio Sam', 11, 4, utc_timestamp, utc_timestamp, 1, 1, 5),
+(6, 'Bar da Maria', 6, 4, utc_timestamp, utc_timestamp, 1, 1, 6);
 
 insert into forma_pagamento (id, descricao) values
 (1, 'Cartão de crédito'),

@@ -5,15 +5,17 @@ import com.charlesluxinger.foodtruck.api.domain.exception.CidadeNotFoundExceptio
 import com.charlesluxinger.foodtruck.api.domain.exception.CozinhaNotFoundException;
 import com.charlesluxinger.foodtruck.api.domain.exception.DomainException;
 import com.charlesluxinger.foodtruck.api.domain.model.RestauranteModel;
+import com.charlesluxinger.foodtruck.api.domain.model.payload.AtivoPayload;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.RestauranteAtivoPayload;
 import com.charlesluxinger.foodtruck.api.domain.model.payload.RestaurantePayload;
-import com.charlesluxinger.foodtruck.api.domain.model.payload.AtivoPayload;
+import com.charlesluxinger.foodtruck.api.domain.model.view.RestauranteView;
 import com.charlesluxinger.foodtruck.api.domain.repository.RestauranteRepository;
 import com.charlesluxinger.foodtruck.api.domain.service.RestauranteService;
 import com.charlesluxinger.foodtruck.api.mapper.RestauranteMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,8 +44,17 @@ public class RestauranteController {
     private final RestauranteMapper restauranteMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RestauranteModel> findAll() {
-        return restauranteMapper.toCollectionModel(restauranteRepository.findAll());
+    public MappingJacksonValue findAll(@RequestParam(required = false) String projecao) {
+        var restaurantes = restauranteMapper.toCollectionModel(restauranteRepository.findAll());
+
+        MappingJacksonValue value = new MappingJacksonValue(restaurantes);
+        value.setSerializationView(RestauranteView.Resumo.class);
+
+        if ("completo".equals(projecao)){
+            value.setSerializationView(null);
+        }
+
+        return value;
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
